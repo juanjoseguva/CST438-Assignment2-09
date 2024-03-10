@@ -8,9 +8,10 @@ import java.util.List;
 public interface AssignmentRepository extends CrudRepository<Assignment, Integer> {
 
     // TODO uncomment the following lines as needed
+    // This is my comment
 
-//    @Query("select a from Assignment a where a.section.sectionNo=:sectionNo order by a.dueDate")
-//    List<Assignment> findBySectionNoOrderByDueDate(int sectionNo);
+    @Query("select a from Assignment a where a.section.sectionNo=:sectionNo order by a.dueDate")
+    List<Assignment> findBySectionNoOrderByDueDate(int sectionNo);
 //
 //    @Query("select a from Assignment a join a.section.enrollments e " +
 //            "where a.section.term.year=:year and a.section.term.semester=:semester and" +
