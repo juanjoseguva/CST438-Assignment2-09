@@ -16,4 +16,7 @@ public class Assignment {
     // add additional attributes for title, dueDate
     // add relationship between assignment and section entities
     // add getter and setter methods
+
+    //A new change comment
+
 }

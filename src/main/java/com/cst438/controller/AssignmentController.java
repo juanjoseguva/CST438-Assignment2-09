@@ -58,7 +58,7 @@ public class AssignmentController {
         // TODO remove the following line when done
 
         return null;
-    
+
 
     // delete assignment for a section
     // logged in user must be instructor of the section
