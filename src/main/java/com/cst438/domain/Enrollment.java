@@ -1,55 +1,60 @@
 package com.cst438.domain;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
 public class Enrollment {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="enrollment_id")
-    int enrollmentId;
-	
-	// TODO complete this class
-    // add additional attribute for grade
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "enrollment_id")
+    private int enrollmentId;
+
+    @Column(name = "grade", length = 5)
     private String grade;
 
-    // create relationship between enrollment and user entities
     @ManyToOne
-    @JoinColumn(name = "id",nullable = false)
-    private User user;
-
-    // create relationship between enrollment and section entities
-    @ManyToOne
-    @JoinColumn(name = "section_no", nullable = false)
+    @JoinColumn(name = "section_no")
     private Section section;
 
-    // add getter/setter methods
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public int getEnrollmentId(){
+    // Getters and Setters
+
+    public int getEnrollmentId() {
         return enrollmentId;
     }
-    public void setEnrollmentId(int enrollmentId){
+
+    public void setEnrollmentId(int enrollmentId) {
         this.enrollmentId = enrollmentId;
     }
 
-    public String getGrade(){
+    public String getGrade() {
         return grade;
     }
-    public void setGrade(String grade){
+
+    public void setGrade(String grade) {
         this.grade = grade;
     }
 
-    public User getUser(){
-        return user;
-    }
-    public void setUser(User user){
-        this.user = user;
-    }
-
-    public Section getSection(){
+    public Section getSection() {
         return section;
     }
-    public void setSection(Section section){
+
+    public void setSection(Section section) {
         this.section = section;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
+
