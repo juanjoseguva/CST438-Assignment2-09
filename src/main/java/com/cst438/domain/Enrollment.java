@@ -1,61 +1,55 @@
 package com.cst438.domain;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
 public class Enrollment {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "enrollment_id")
-    private int enrollmentId;
-
-    @Column(name = "grade", length = 5)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="enrollment_id")
+    int enrollmentId;
+	
+	// TODO complete this class
+    // add additional attribute for grade
     private String grade;
 
+    // create relationship between enrollment and user entities
     @ManyToOne
-    @JoinColumn(name = "section_no")
+    @JoinColumn(name = "user_id",nullable = false)
+    private User student;
+
+    // create relationship between enrollment and section entities
+    @ManyToOne
+    @JoinColumn(name = "section_no", nullable = false)
     private Section section;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    // add getter/setter methods
 
-    // Getters and Setters
-
-    public int getEnrollmentId() {
+    public int getEnrollmentId(){
         return enrollmentId;
     }
-
-    public void setEnrollmentId(int enrollmentId) {
+    public void setEnrollmentId(int enrollmentId){
         this.enrollmentId = enrollmentId;
     }
 
-    public String getGrade() {
+    public String getGrade(){
         return grade;
     }
-
-    public void setGrade(String grade) {
+    public void setGrade(String grade){
         this.grade = grade;
     }
 
-    public Section getSection() {
+    public User getStudent(){
+        return student;
+    }
+    public void setUser(User student){
+        this.student = student;
+    }
+
+    public Section getSection(){
         return section;
     }
-
-    public void setSection(Section section) {
+    public void setSection(Section section){
         this.section = section;
     }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
 }
-
