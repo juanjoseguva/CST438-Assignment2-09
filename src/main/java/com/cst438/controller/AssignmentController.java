@@ -189,7 +189,21 @@ public class AssignmentController {
         // return a list of assignments and (if they exist) the assignment grade
         //  for all sections that the student is enrolled for the given year and semester
 		//  hint: use the assignment repository method findByStudentIdAndYearAndSemesterOrderByDueDate
+        List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(studentId, year, semester);
+        List<AssignmentStudentDTO> dtoList = new ArrayList<>();
+        for(Assignment a:assignments){
+            Enrollment e = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(a.getSection(), studentId);
+            Grade g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), a.getAssignmentId());
+            dtoList.add(new AssignmentDTO(
+                    a.getAssignmentId(),
+                    a.getTitle(),
+                    a.getDueDate().toString(),
+                    a.getSection().getCourse().getCourseId(),
+                    a.getSection().getSecId(),
+                    g.getScore()
+            ));
+        }
 
-        return null;
+        return dtoList;
     }
 }
