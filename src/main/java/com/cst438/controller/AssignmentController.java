@@ -54,7 +54,7 @@ public class AssignmentController {
 
         Section s = sectionRepository.findById(dto.secId()).orElse(null);
         if (s==null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secNo());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secId());
         }
 
         // TODO remove the following line when done
@@ -79,11 +79,20 @@ public class AssignmentController {
     @PutMapping("/assignments")
     public AssignmentDTO updateAssignment(@RequestBody AssignmentDTO dto) {
 
+        Assignment a = assignmentRepository.findById(dto.id()).orElse(null);
+        if(a==null){
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Assignment not found "+dto.id());
+        }
+
         // TODO remove the following line when done
-        Assignment a = assignmentRepository.findBy
-
-        return null;
-
+        a.setTitle(dto.title());
+        a.setDueDate(dto.dueDate());
+        assignmentRepository.save(a);
+        return new AssignmentDTO(
+                a.getTitle(),
+                a.getDueDate()
+        );
+    }
 
     // delete assignment for a section
     // logged in user must be instructor of the section
