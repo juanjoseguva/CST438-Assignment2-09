@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -69,9 +70,9 @@ public class AssignmentController {
         Assignment a = new Assignment();
         a.setAssignmentId(dto.id());
         a.setTitle(dto.title());
-        //TO DO convert string -> date
-        Date date = new Date();
-        a.setDueDate(dto.dueDate());
+        //convert string -> date
+        Date date = Date.valueOf(dto.dueDate());
+        a.setDueDate(date);
         a.setSection(s);
         assignmentRepository.save(a);
 
@@ -82,7 +83,7 @@ public class AssignmentController {
                 a.getSection().getCourse().getCourseId(),
                 a.getSection().getSecId(),
                 a.getSection().getSectionNo()
-        ));
+        );
     }
 
     // update assignment for a section.  Only title and dueDate may be changed.
@@ -97,7 +98,9 @@ public class AssignmentController {
         }
 
         a.setTitle(dto.title());
-        a.setDueDate(dto.dueDate());
+        //convert string -> date
+        Date date = Date.valueOf(dto.dueDate());
+        a.setDueDate(date);
         assignmentRepository.save(a);
         return new AssignmentDTO(
                 a.getAssignmentId(),
@@ -106,7 +109,7 @@ public class AssignmentController {
                 a.getSection().getCourse().getCourseId(),
                 a.getSection().getSecId(),
                 a.getSection().getSectionNo()
-        ));
+        );
     }
 
     // delete assignment for a section
@@ -141,18 +144,21 @@ public class AssignmentController {
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         for(Enrollment e:enrollments){
             //   if the grade does not exist, create a grade entity and set the score to NULL
-            Grade g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), assignmentId).orElse(new Grade());
-            g.setScore(null);
+            Grade g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), assignmentId);
+            if(g==null){
+                g = new Grade();
+                g.setScore(null);
+            }
             //   and then save the new entity
-            gradeRepository.save(a);
+            gradeRepository.save(g);
 
             gradeDTOList.add(new GradeDTO(
                     g.getGradeId(),
-                    e.getUser().getName(),
-                    e.getUser().getEmail(),
+                    e.getStudent().getName(),
+                    e.getStudent().getEmail(),
                     a.getTitle(),
                     e.getSection().getCourse().getCourseId(),
-                    e.getSection().setSecId(),
+                    e.getSection().getSecId(),
                     g.getScore()
             ));
         }
@@ -165,14 +171,14 @@ public class AssignmentController {
     public void updateGrades(@RequestBody List<GradeDTO> dlist) {
 
         // for each grade in the GradeDTO list, retrieve the grade entity
-        for(GradeDTO dto:dList){
+        for(GradeDTO dto:dlist){
             Grade g = gradeRepository.findById(dto.gradeId()).orElse(null);
-            if(a==null){
+            if(g==null){
                 throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Grade not found "+dto.gradeId());
             }
             // update the score and save the entity
             g.setScore(dto.score());
-            gradeRepository.save(a);
+            gradeRepository.save(g);
         }
     }
 
@@ -194,12 +200,12 @@ public class AssignmentController {
         List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(studentId, year, semester);
         List<AssignmentStudentDTO> dtoList = new ArrayList<>();
         for(Assignment a:assignments){
-            Enrollment e = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(a.getSection(), studentId);
+            Enrollment e = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(a.getSection().getSectionNo(), studentId);
             Grade g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), a.getAssignmentId());
-            dtoList.add(new AssignmentDTO(
+            dtoList.add(new AssignmentStudentDTO(
                     a.getAssignmentId(),
                     a.getTitle(),
-                    a.getDueDate().toString(),
+                    a.getDueDate(),
                     a.getSection().getCourse().getCourseId(),
                     a.getSection().getSecId(),
                     g.getScore()
