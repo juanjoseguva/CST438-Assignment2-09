@@ -20,7 +20,7 @@ public class Assignment {
     // add relationship between assignment and section entities
     @ManyToOne
     @JoinColumn(name = "section_no", nullable = false)
-    private Section section
+    private Section section;
     // add getter and setter methods
 
     public int getAssignmentId() {

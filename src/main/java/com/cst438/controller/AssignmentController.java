@@ -69,6 +69,8 @@ public class AssignmentController {
         Assignment a = new Assignment();
         a.setAssignmentId(dto.id());
         a.setTitle(dto.title());
+        //TO DO convert string -> date
+        Date date = new Date();
         a.setDueDate(dto.dueDate());
         a.setSection(s);
         assignmentRepository.save(a);
@@ -132,7 +134,7 @@ public class AssignmentController {
 
         // get the list of enrollments for the section related to this assignment.
 		// hint: use the enrollment repository method findEnrollmentsBySectionOrderByStudentName.
-        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(a.getSection.getSectionNo());
+        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(a.getSection().getSectionNo());
 
         // for each enrollment, get the grade related to the assignment and enrollment
 		//   hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
