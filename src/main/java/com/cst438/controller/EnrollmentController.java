@@ -28,9 +28,9 @@ public class EnrollmentController {
                 .map(enrollment -> new EnrollmentDTO(
                         enrollment.getEnrollmentId(),
                         enrollment.getGrade(),
-                        enrollment.getUser().getId(),
-                        enrollment.getUser().getName(),
-                        enrollment.getUser().getEmail(),
+                        enrollment.getStudent().getId(),
+                        enrollment.getStudent().getName(),
+                        enrollment.getStudent().getEmail(),
                         enrollment.getSection().getCourse().getCourseId(),
                         enrollment.getSection().getSecId(),
                         enrollment.getSection().getSectionNo(),
