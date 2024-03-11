@@ -99,7 +99,12 @@ public class AssignmentController {
     @DeleteMapping("/assignments/{assignmentId}")
     public void deleteAssignment(@PathVariable("assignmentId") int assignmentId) {
 
+        Assignment a = assignmentRepository.findById(assignmentId).orElse(null);
+        //if assignment doesn't exist, do nothing
         // TODO
+        if(a!=null){
+            assignmentRepository.delete(a);
+        }
     }
 
     // instructor gets grades for assignment ordered by student name
