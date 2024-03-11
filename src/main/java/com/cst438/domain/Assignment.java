@@ -14,6 +14,8 @@ public class Assignment {
 
     // add additional attributes for title, dueDate
     private String title;
+
+    @Column(name = "due_date")
     private Date dueDate;
     // add relationship between assignment and section entities
     @ManyToOne

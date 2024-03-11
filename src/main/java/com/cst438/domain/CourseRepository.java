@@ -5,5 +5,8 @@ import java.util.List;
 
 public interface CourseRepository extends CrudRepository<Course, String> {
 	
+
+    Course findById(String courseId);
+
     List<Course> findAllByOrderByCourseIdAsc();
 }
