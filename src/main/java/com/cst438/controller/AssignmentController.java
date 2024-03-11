@@ -25,6 +25,7 @@ public class AssignmentController {
     AssignmentRepository assignmentRepository;
     CourseRepository courseRepository;
     SectionRepository sectionRepository;
+    EnrollmentRepository enrollmentRepository;
 
     // instructor lists assignments for a section.  Assignments ordered by due date.
     // logged in user must be the instructor for the section
@@ -116,6 +117,8 @@ public class AssignmentController {
 
         // get the list of enrollments for the section related to this assignment.
 		// hint: use te enrollment repository method findEnrollmentsBySectionOrderByStudentName.
+
+
         // for each enrollment, get the grade related to the assignment and enrollment
 		//   hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
         //   if the grade does not exist, create a grade entity and set the score to NULL
