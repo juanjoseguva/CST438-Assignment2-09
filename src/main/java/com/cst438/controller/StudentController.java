@@ -49,7 +49,7 @@ public class StudentController {
       List<EnrollmentDTO> dto_list = new ArrayList<>();
       boolean studentFound = false;
       for (Enrollment e : enrollments) {
-          if (e.getUser().getId() == studentId) {
+          if (e.getStudent().getId() == studentId) {
               studentFound = true;
               break;
           }
@@ -62,8 +62,8 @@ public class StudentController {
                       e.getEnrollmentId(),
                       e.getGrade(),
                       studentId,
-                      e.getUser().getName(),
-                      e.getUser().getEmail(),
+                      e.getStudent().getName(),
+                      e.getStudent().getEmail(),
                       e.getSection().getCourse().getCourseId(),
                       e.getSection().getSecId(),
                       e.getSection().getSectionNo(),
@@ -98,8 +98,8 @@ public class StudentController {
                    e.getEnrollmentId(),
                    e.getGrade(),
                    studentId,
-                   e.getUser().getName(),
-                   e.getUser().getEmail(),
+                   e.getStudent().getName(),
+                   e.getStudent().getEmail(),
                    e.getSection().getCourse().getCourseId(),
                    e.getSection().getSecId(),
                    e.getSection().getSectionNo(),
@@ -166,8 +166,8 @@ public class StudentController {
               e.getEnrollmentId(),
               "",
                 studentId,
-                e.getUser().getName(),
-                e.getUser().getEmail(),
+                e.getStudent().getName(),
+                e.getStudent().getEmail(),
                 e.getSection().getCourse().getCourseId(),
                 e.getSection().getSecId(),
                 e.getSection().getSectionNo(),
