@@ -192,7 +192,7 @@ public class StudentController {
        }
 
        // user must be student
-       if (!e.getUser().getType().equals("STUDENT")) {
+       if (!e.getStudent().getType().equals("STUDENT")) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must be student");
        }
 	   
