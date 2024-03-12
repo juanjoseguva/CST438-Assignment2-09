@@ -92,6 +92,9 @@ public class StudentController {
      // TODO
 	 //  hint: use enrollment repository method findByYearAndSemesterOrderByCourseId
        List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
+       if (enrollments.isEmpty()) {
+           throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Enrollment not found");
+       }
        List<EnrollmentDTO> dto_list = new ArrayList<>();
        for (Enrollment e : enrollments) {
            dto_list.add(new EnrollmentDTO(

@@ -40,6 +40,9 @@ public class AssignmentController {
             @PathVariable("secNo") int secNo) {
 
         List<Assignment> assignments = assignmentRepository.findBySectionNoOrderByDueDate(secNo);
+	if (assignments.isEmpty()) {
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found ");
+        }
         List<AssignmentDTO> dto_list = new ArrayList<>();
         for(Assignment a:assignments){
             dto_list.add(new AssignmentDTO(
