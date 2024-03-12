@@ -18,4 +18,7 @@ public interface SectionRepository extends CrudRepository<Section, Integer> {
     @Query("select s from Section s where current_date between s.term.addDate and s.term.addDeadline " +
             " order by s.course.courseId, s.secId")
     List<Section> findByOpenOrderByCourseIdSectionId();
+
+    @Query("select s from Section s where s.sectionNo=:sectionNo")
+    Section findSectionBySectionNo(int sectionNo);
 }
