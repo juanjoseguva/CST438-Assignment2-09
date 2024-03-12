@@ -23,6 +23,9 @@ public class EnrollmentController {
     @GetMapping("/sections/{sectionNo}/enrollments")
     public List<EnrollmentDTO> getEnrollments(@PathVariable("sectionNo") int sectionNo) {
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(sectionNo);
+        if(enrollments == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Section number is invalid");
+        }
 
         return enrollments.stream()
                 .map(enrollment -> new EnrollmentDTO(
