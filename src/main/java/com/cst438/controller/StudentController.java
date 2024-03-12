@@ -3,6 +3,7 @@ package com.cst438.controller;
 import com.cst438.domain.*;
 import com.cst438.dto.CourseDTO;
 import com.cst438.dto.EnrollmentDTO;
+import com.sun.tools.jconsole.JConsoleContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -154,9 +155,10 @@ public class StudentController {
 
         // create a new enrollment entity and save.  The enrollment grade will
         // be NULL until instructor enters final grades for the course.
-        if (e!=null) {
+        if (e != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "already enrolled in this section");
         } else {
+            e = new Enrollment();
             e.setSection(section);
             e.setUser(student);
             enrollmentRepository.save(e);
@@ -178,8 +180,6 @@ public class StudentController {
             );
         }
 
-
-
     }
 
     // student drops a course
@@ -187,8 +187,20 @@ public class StudentController {
    @DeleteMapping("/enrollments/{enrollmentId}")
    public void dropCourse(@PathVariable("enrollmentId") int enrollmentId) {
 
-       // TODO
+       Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentId);
+       if (e == null) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Enrollment does not exist");
+       }
        // check that today is not after the dropDeadline for section
+       long millis = System.currentTimeMillis();
+       java.sql.Date today = new java.sql.Date(millis);
+       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+       Date dropDate = e.getSection().getTerm().getDropDeadline();
+       if (today.after(dropDate)) {
+           throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "Too late to drop. Sorry, the money is ours");
+       } else {
+           enrollmentRepository.delete(e);
+       }
 
    }
 }
