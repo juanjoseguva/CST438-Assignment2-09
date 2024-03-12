@@ -40,8 +40,8 @@ public class AssignmentController {
             @PathVariable("secNo") int secNo) {
 
         List<Assignment> assignments = assignmentRepository.findBySectionNoOrderByDueDate(secNo);
-	if (assignments.isEmpty()) {
-            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found ");
+	    if (assignments.isEmpty()) {
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found " + secNo);
         }
         List<AssignmentDTO> dto_list = new ArrayList<>();
         for(Assignment a:assignments){
@@ -72,6 +72,9 @@ public class AssignmentController {
         if (s==null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secId());
         }
+        if(s.getSectionNo()!=dto.secNo()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "sectionNo not matched " + dto.secNo());
+        }
 
         // TODO remove the following line when done
         Assignment a = new Assignment();
@@ -79,6 +82,15 @@ public class AssignmentController {
         a.setTitle(dto.title());
         //convert string -> date
         Date date = Date.valueOf(dto.dueDate());
+
+        Date startDate = s.getTerm().getStartDate();
+        Date dropDate = s.getTerm().getEndDate();
+        if(date.before(startDate)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "DueDate is before course StartDate ");
+        }if(date.after(dropDate)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "DueDate is after course EndDate ");
+        }
+
         a.setDueDate(date);
         a.setSection(s);
         assignmentRepository.save(a);
@@ -107,6 +119,15 @@ public class AssignmentController {
         a.setTitle(dto.title());
         //convert string -> date
         Date date = Date.valueOf(dto.dueDate());
+
+        Date startDate = a.getSection().getTerm().getStartDate();
+        Date dropDate = a.getSection().getTerm().getEndDate();
+        if(date.before(startDate)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "DueDate is before course StartDate ");
+        }if(date.after(dropDate)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "DueDate is after course EndDate ");
+        }
+
         a.setDueDate(date);
         assignmentRepository.save(a);
         return new AssignmentDTO(
@@ -145,20 +166,27 @@ public class AssignmentController {
         // get the list of enrollments for the section related to this assignment.
 		// hint: use the enrollment repository method findEnrollmentsBySectionOrderByStudentName.
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(a.getSection().getSectionNo());
+        if (enrollments.isEmpty()) {
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Enrollment not found");
+        }
 
         // for each enrollment, get the grade related to the assignment and enrollment
 		//   hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
         List<GradeDTO> gradeDTOList = new ArrayList<>();
+        if(enrollments.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enrollment not found");
+        }
         for(Enrollment e:enrollments){
             //   if the grade does not exist, create a grade entity and set the score to NULL
             Grade g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), assignmentId);
             if(g==null){
                 g = new Grade();
+                g.setAssignment(a);
+                g.setEnrollment(e);
                 g.setScore(null);
+                //   and then save the new entity
+                gradeRepository.save(g);
             }
-            //   and then save the new entity
-            gradeRepository.save(g);
-
             gradeDTOList.add(new GradeDTO(
                     g.getGradeId(),
                     e.getStudent().getName(),
@@ -188,8 +216,6 @@ public class AssignmentController {
             gradeRepository.save(g);
         }
     }
-
-
 
     // student lists their assignments/grades for an enrollment ordered by due date
     // student must be enrolled in the section

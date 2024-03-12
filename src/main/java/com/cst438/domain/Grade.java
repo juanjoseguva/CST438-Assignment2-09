@@ -26,7 +26,7 @@ public class Grade {
     // add getter/setter methods
     public int getGradeId() {return gradeId; }
     public void setGradeId(int gradeId) {this.gradeId = gradeId; }
-    public int getScore() {return score; }
+    public Integer getScore() {return score; }
     public void setScore (Integer score) {this.score = score; }
     public Assignment getAssignment() {return assignment; }
     public void setAssignment(Assignment assignment) {this.assignment = assignment; }
