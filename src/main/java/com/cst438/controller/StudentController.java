@@ -183,7 +183,6 @@ public class StudentController {
     }
 
     // student drops a course
-    // user must be student
    @DeleteMapping("/enrollments/{enrollmentId}")
    public void dropCourse(@PathVariable("enrollmentId") int enrollmentId) {
 
@@ -191,6 +190,12 @@ public class StudentController {
        if (e == null) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Enrollment does not exist");
        }
+
+       // user must be student
+       if (!e.getUser().getType().equals("STUDENT")) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must be student");
+       }
+	   
        // check that today is not after the dropDeadline for section
        long millis = System.currentTimeMillis();
        java.sql.Date today = new java.sql.Date(millis);
