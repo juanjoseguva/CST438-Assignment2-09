@@ -186,6 +186,7 @@ public class AssignmentController {
                 g.setScore(null);
                 //   and then save the new entity
                 gradeRepository.save(g);
+                g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), assignmentId);
             }
             gradeDTOList.add(new GradeDTO(
                     g.getGradeId(),
