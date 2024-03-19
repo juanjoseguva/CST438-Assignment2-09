@@ -40,7 +40,7 @@ public class AssignmentController {
             @PathVariable("secNo") int secNo) {
 
         List<Assignment> assignments = assignmentRepository.findBySectionNoOrderByDueDate(secNo);
-	    if (assignments.isEmpty()) {
+        if (assignments.isEmpty()) {
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found " + secNo);
         }
         List<AssignmentDTO> dto_list = new ArrayList<>();
@@ -54,10 +54,10 @@ public class AssignmentController {
                     a.getSection().getSectionNo()
             ));
         }
-		
-		// hint: use the assignment repository method 
-		//  findBySectionNoOrderByDueDate to return 
-		//  a list of assignments
+
+        // hint: use the assignment repository method
+        //  findBySectionNoOrderByDueDate to return
+        //  a list of assignments
 
         return dto_list;
     }
@@ -68,7 +68,7 @@ public class AssignmentController {
     @PostMapping("/assignments")
     public AssignmentDTO createAssignment(@RequestBody AssignmentDTO dto) {
 
-        Section s = sectionRepository.findById(dto.secId()).orElse(null);
+        Section s = sectionRepository.findSectionBySectionNo(dto.secNo());
         if (s==null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secId());
         }
@@ -164,14 +164,14 @@ public class AssignmentController {
         }
 
         // get the list of enrollments for the section related to this assignment.
-		// hint: use the enrollment repository method findEnrollmentsBySectionOrderByStudentName.
+        // hint: use the enrollment repository method findEnrollmentsBySectionOrderByStudentName.
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(a.getSection().getSectionNo());
         if (enrollments.isEmpty()) {
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Enrollment not found");
         }
 
         // for each enrollment, get the grade related to the assignment and enrollment
-		//   hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
+        //   hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         if(enrollments.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enrollment not found");
@@ -186,7 +186,6 @@ public class AssignmentController {
                 g.setScore(null);
                 //   and then save the new entity
                 gradeRepository.save(g);
-                g = gradeRepository.findByEnrollmentIdAndAssignmentId(e.getEnrollmentId(), assignmentId);
             }
             gradeDTOList.add(new GradeDTO(
                     g.getGradeId(),
