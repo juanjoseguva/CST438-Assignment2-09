@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class SectionController {
 
+    private static final Logger logger = LoggerFactory.getLogger(SectionController.class.getName());
     @Autowired
     CourseRepository courseRepository;
 
@@ -152,11 +155,14 @@ public class SectionController {
     @GetMapping("/sections")
     public List<SectionDTO> getSectionsForInstructor(
             @RequestParam("email") String instructorEmail,
-            @RequestParam("year") int year ,
-            @RequestParam("semester") String semester )  {
+            @RequestParam("year") int year,
+            @RequestParam("semester") String semester) {
 
+        logger.info("Fetching sections for instructor: {}, year: {}, semester: {}", instructorEmail, year, semester);
 
         List<Section> sections = sectionRepository.findByInstructorEmailAndYearAndSemester(instructorEmail, year, semester);
+
+        logger.info("Found {} sections for instructor: {}, year: {}, semester: {}", sections.size(), instructorEmail, year, semester);
 
         List<SectionDTO> dto_list = new ArrayList<>();
         for (Section s : sections) {
@@ -179,7 +185,7 @@ public class SectionController {
         }
         return dto_list;
     }
-	
+
     @GetMapping("/sections/open")
     public List<SectionDTO> getOpenSectionsForEnrollment() {
 
