@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.sql.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -38,56 +37,6 @@ public class AssignmentControllerUnitTest {
     @Autowired
     CourseRepository courseRepository;
 
-    @BeforeEach
-    public void setup() {
-        // Create and save a Term entity
-        Term term = new Term();
-        term.setYear(2024);
-        term.setSemester("Spring");
-        term.setAddDate(Date.valueOf("2024-01-01"));
-        term.setAddDeadline(Date.valueOf("2024-01-13"));
-        term.setStartDate(Date.valueOf("2024-01-15"));
-        term.setDropDeadline(Date.valueOf("2024-02-15"));
-        term.setEndDate(Date.valueOf("2024-05-15"));
-        termRepository.save(term);
-
-        // Create and save a Course entity
-        Course course = new Course();
-        course.setCourseId("cst499");
-        course.setTitle("Capstone");
-        course.setCredits(10);
-        courseRepository.save(course);
-
-        // Create and save a Section entity
-        Section section = new Section();
-        section.setSecId(1);
-        section.setBuilding("052");
-        section.setRoom("104");
-        section.setTimes("W F 1:00-2:50 pm");
-        section.setCourse(course);
-        section.setTerm(term);
-        sectionRepository.save(section);
-    }
-
-    @AfterEach
-    public void cleanup() {
-        // Delete all entities created during the test
-        Term term = termRepository.findByYearAndSemester(2024, "Spring");
-        termRepository.delete(term);
-
-        Course course = courseRepository.findById("cst499");
-        courseRepository.delete(course);
-
-        Section section = new Section();
-        section.setSecId(1);
-        section.setBuilding("052");
-        section.setRoom("104");
-        section.setTimes("W F 1:00-2:50 pm");
-        section.setCourse(course);
-        section.setTerm(term);
-        sectionRepository.delete(section);
-    }
-
     @Test
     public void addAssignment() throws Exception {
         MockHttpServletResponse response;
@@ -97,9 +46,9 @@ public class AssignmentControllerUnitTest {
                 0,
                 "Final Project",
                 "2024-05-01",
-                "cst499",
+                "cst363",
                 1,
-                1
+                9
         );
 
         // Issue an HTTP POST request to add the assignment
@@ -121,6 +70,12 @@ public class AssignmentControllerUnitTest {
         // Primary key should have a non-zero value from the database
         assertNotEquals(0, result.id());
 
+        Assignment a = assignmentRepository.findById(result.id()).orElse(null);
+        assertNotNull(a);
+        Date expectedDate = new Date(124, 4, 1);
+        assertEquals("Final Project", a.getTitle());
+        assertEquals(expectedDate, a.getDueDate());
+
         // Clean up after test. Issue HTTP DELETE request for assignment
         response = mvc.perform(
                         MockMvcRequestBuilders
@@ -129,6 +84,9 @@ public class AssignmentControllerUnitTest {
                 .getResponse();
 
         assertEquals(200, response.getStatus());
+
+        a = assignmentRepository.findById(result.id()).orElse(null);
+        assertNull(a);
     }
 
     @Test
