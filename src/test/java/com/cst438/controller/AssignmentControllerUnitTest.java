@@ -99,7 +99,7 @@ public class AssignmentControllerUnitTest {
                 "2024-05-01",
                 "cst499",
                 1,
-                1 // Assuming section number is 1
+                1
         );
 
         // Issue an HTTP POST request to add the assignment
@@ -135,14 +135,13 @@ public class AssignmentControllerUnitTest {
     public void addAssignmentFailsDueDatePastEndDate() throws Exception {
         MockHttpServletResponse response;
 
-        // Create DTO with data for new assignment with due date past end date
         AssignmentDTO assignment = new AssignmentDTO(
                 0,
                 "Final Project",
                 "2024-05-20",
                 "cst499",
                 1,
-                1 
+                1
         );
 
         // Issue an HTTP POST request to add the assignment
