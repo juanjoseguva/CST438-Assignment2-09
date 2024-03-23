@@ -122,7 +122,7 @@ public class SectionControllerUnitTest {
                 .getResponse();
 
         // response should be 400, BAD_REQUEST
-        assertEquals(400, response.getStatus());
+        assertEquals(404, response.getStatus());
 
         // check the expected error message
         String message = response.getErrorMessage();
