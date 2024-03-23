@@ -95,9 +95,9 @@ public class AssignmentControllerUnitTest {
                 0,
                 "Final Project",
                 "2024-05-20",
-                "cst499",
+                "cst363",
                 1,
-                1
+                9
         );
 
         // Issue an HTTP POST request to add the assignment
