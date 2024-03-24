@@ -70,7 +70,7 @@ public class AssignmentController {
 
         Section s = sectionRepository.findSectionBySectionNo(dto.secNo());
         if (s==null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found " + dto.secNo());
         }
         if(s.getSectionNo()!=dto.secNo()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "sectionNo not matched " + dto.secNo());
