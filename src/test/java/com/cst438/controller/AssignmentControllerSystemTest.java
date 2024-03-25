@@ -90,4 +90,54 @@ public class AssignmentControllerSystemTest {
 
     }
 
+    @Test
+    public void systemTestAddAssignment() throws Exception{
+        //Adds an assginment for cst363, Spring 2024
+        driver.findElement(By.id("year")).sendKeys("2024");
+        driver.findElement(By.id("semester")).sendKeys("Spring");
+        WebElement we = driver.findElement(By.id("sections"));
+        we.click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //Check for cst363, view assignments
+        try{
+            while(true){
+                WebElement row363 = driver.findElement(By.xpath("//tr[td='cst438']"));
+                List<WebElement> links = row363.findElements(By.tagName("a"));
+                assertEquals(2, links.size()); //View Assignments is the second link
+                links.get(1).click();
+                Thread.sleep(SLEEP_DURATION);
+            }
+        } catch (NoSuchElementException e){
+            //do nothing about it
+        }
+
+        //Add assginment
+        driver.findElement(By.id("addAssignment")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //populate data fields
+        driver.findElement(By.id("addTitle")).sendKeys("db assignment 3 [TEST]");
+        driver.findElement(By.id("addDueDate")).sendKeys("02222024");//TODO: Not sure how to pass keys to DatePicker
+        driver.findElement(By.id("save")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //Check to see if the assignment was added then delete
+        WebElement row363 = driver.findElement(By.xpath("//tr[td='db assignment 3 [TEST]']"));
+        List<WebElement> buttons = row363.findElements(By.tagName("button"));
+        assertEquals(2, buttons.size());
+        buttons.get(1).click();
+        Thread.sleep(SLEEP_DURATION);
+        List<WebElement> confirmButtons = driver
+                .findElement(By.className("react-confirm-alert-button-group"))
+                .findElements(By.tagName("button"));
+        assertEquals(2, confirmButtons.size());
+        confirmButtons.get(0).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //Check to make sure the assignment is deleted
+        assertThrows(NoSuchElementException.class, () ->
+                driver.findElement(By.xpath("//tr[td='db assignment 3 [TEST]")));
+    }
+
 }
