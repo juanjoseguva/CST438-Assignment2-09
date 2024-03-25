@@ -62,6 +62,31 @@ public class AssignmentControllerSystemTest {
         driver.findElement(By.id("year")).sendKeys("2024");
         driver.findElement(By.id("semester")).sendKeys("Spring");
         driver.findElement(By.linkText("Show Sections")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //Section 8 should have two assignments
+        WebElement sec8 = driver.findElement(By.id("8"));
+        sec8.findElement(By.linkText("View Assignments")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //We will select assignment one to grade.
+        WebElement ass1 = driver.findElement(By.id("1"));
+        ass1.findElements(By.tagName("button")).get(0).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //We will enter a score of 88 for all students
+        List<WebElement> scoreFields = driver.findElements(By.name("score"));
+
+        for(WebElement field:scoreFields){
+            field.clear();
+            field.sendKeys("88");
+        }
+        driver.findElement(By.id("saveGrades")).click();
+        String message = driver.findElement(By.id("editMessage")).getText();
+        assertEquals("Grades saved!", message);
+        driver.findElement(By.id("closeGrades")).click();
+
+
 
     }
 
