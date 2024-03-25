@@ -251,7 +251,7 @@ public class AssignmentControllerUnitTest {
     public void gradeAssignmentButAssignmentIdInvalid() throws Exception {
         MockHttpServletResponse response;
 
-        //create assignment with invalid gradeId
+        //create assignment with invalid assignmentId
         AssignmentDTO assignment = new AssignmentDTO(
                 10,
                 "Final Project",
