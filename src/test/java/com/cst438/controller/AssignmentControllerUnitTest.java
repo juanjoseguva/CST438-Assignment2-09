@@ -247,6 +247,38 @@ public class AssignmentControllerUnitTest {
         assertEquals(gradeDTOS, resetGrades);
     }
 
+    @Test
+    public void gradeAssignmentButAssignmentIdInvalid() throws Exception {
+        MockHttpServletResponse response;
+
+        //create assignment with invalid gradeId
+        AssignmentDTO assignment = new AssignmentDTO(
+                10,
+                "Final Project",
+                "2024-05-20",
+                "cst363",
+                1,
+                9
+        );
+
+        // Issue an HTTP POST request to add the assignment
+        response = mvc.perform(
+                        MockMvcRequestBuilders
+                                .get("/assignments/"+assignment.id()+"/grades")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(assignment)))
+                .andReturn()
+                .getResponse();
+
+        // Response should be 404, NOT_FOUND
+        assertEquals(404, response.getStatus());
+
+        // Check the expected error message
+        String message = response.getErrorMessage();
+        assertEquals("assignment not found "+assignment.id(), message);
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
