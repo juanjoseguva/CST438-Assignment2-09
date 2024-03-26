@@ -101,9 +101,10 @@ public class AssignmentControllerSystemTest {
         //Check for cst363, view assignments
         try{
             while(true){
-                WebElement row363 = driver.findElement(By.xpath("//tr[td='cst438']"));
+                WebElement row363 = driver.findElement(By.xpath("//tr[td='cst363']"));
                 List<WebElement> links = row363.findElements(By.tagName("a"));
-                assertEquals(2, links.size()); //View Assignments is the second link
+                assertEquals(2, links.size());
+                //View Assignments is the second link
                 links.get(1).click();
                 Thread.sleep(SLEEP_DURATION);
             }
