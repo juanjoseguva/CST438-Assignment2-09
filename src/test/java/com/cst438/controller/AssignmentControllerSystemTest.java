@@ -92,11 +92,10 @@ public class AssignmentControllerSystemTest {
 
     @Test
     public void systemTestAddAssignment() throws Exception{
-        //Adds an assginment for cst363, Spring 2024
+        //Adds an assignment for cst363, Spring 2024
         driver.findElement(By.id("year")).sendKeys("2024");
         driver.findElement(By.id("semester")).sendKeys("Spring");
-        WebElement we = driver.findElement(By.id("sections"));
-        we.click();
+        driver.findElement(By.linkText("Show Sections")).click();
         Thread.sleep(SLEEP_DURATION);
 
         //Check for cst363, view assignments
