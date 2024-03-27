@@ -62,10 +62,8 @@ public class StudentControllerSystemTest {
     @Test
     public void systemTestEnrollSection() throws Exception {
         // add first available section
-        //TODO:
-        // verify enrollment shows on transcript
-        // delete the enrollment
-        // verify the enrollment is gone
+        // verify enrollment appears on schedule
+        // drop course
 
         //click link to navigate to course enroll
         WebElement we = driver.findElement(By.id("addCourse"));
@@ -88,6 +86,29 @@ public class StudentControllerSystemTest {
         String message = driver.findElement(By.id("addMessage")).getText();
         //assertTrue(message.equals("course added"));
         assertEquals("course added", message);
+
+        we = driver.findElement(By.id("schedule"));
+        we.click();
+        driver.findElement(By.id("ayear")).sendKeys("2024");
+        driver.findElement(By.id("asemester")).sendKeys("Spring");
+        driver.findElement(By.id("search")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        //drop recently added section from CST338
+        WebElement row = driver.findElement(By.xpath("//tr[td='cst338']"));
+        assertNotNull(row);
+
+        WebElement dropButton = row.findElement(By.tagName("button"));
+        dropButton.click();
+        Thread.sleep(SLEEP_DURATION);
+
+        // find the YES to confirm button
+        List<WebElement> confirmButtons = driver
+                .findElement(By.className("react-confirm-alert-button-group"))
+                .findElements(By.tagName("button"));
+        assertEquals(2,confirmButtons.size());
+        confirmButtons.get(0).click();
+        Thread.sleep(SLEEP_DURATION);
 
     }
 }
