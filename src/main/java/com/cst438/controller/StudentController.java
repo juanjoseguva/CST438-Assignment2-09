@@ -129,7 +129,7 @@ public class StudentController {
 
         // TODO
         // check that the Section entity with primary key sectionNo exists
-        Section s = sectionRepository.findSectionBySectionNo(sectionNo);
+        Section s = sectionRepository.findById(sectionNo).orElse(null);
         if (s==null){
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found " + sectionNo);
         }
