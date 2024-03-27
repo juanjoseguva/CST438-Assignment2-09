@@ -174,7 +174,7 @@ public class StudentControllerUnitTest {
         // convert section to String data and set as request content
         response = mvc.perform(
                         MockMvcRequestBuilders
-                                .post("/enrollments/sections/"+enrollment.sectionNo()+"/?studentId="+enrollment.studentId())
+                                .post("/enrollments/sections/"+enrollment.sectionNo()+"?studentId="+enrollment.studentId())
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(asJsonString(enrollment)))
