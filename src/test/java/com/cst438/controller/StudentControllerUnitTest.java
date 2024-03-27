@@ -201,14 +201,14 @@ public class StudentControllerUnitTest {
                 3,
                 "thomas edison",
                 "tedison@csumb.edu",
-                "cst363",
-                9,
-                9,
+                "cst338",
+                1,
+                1,
                 "052",
-                "104",
+                "100",
                 "M W 10:00-11:50",
                 4,
-                2025,
+                2024,
                 "Spring"
         );
 
