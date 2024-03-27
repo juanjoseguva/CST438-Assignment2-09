@@ -208,7 +208,7 @@ public class StudentControllerUnitTest {
                 "104",
                 "M W 10:00-11:50",
                 4,
-                2024,
+                2025,
                 "Spring"
         );
 
