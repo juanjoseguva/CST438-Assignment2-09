@@ -118,7 +118,7 @@ public class AssignmentControllerSystemTest {
 
         //populate data fields
         driver.findElement(By.id("addTitle")).sendKeys("db assignment 3 [TEST]");
-        driver.findElement(By.id("addDueDate")).sendKeys("02222024");//TODO: Not sure how to pass keys to DatePicker
+        driver.findElement(By.id("addDueDate")).sendKeys("2024-02-22");//After reading the documentation, this is the format it should send the date as
         driver.findElement(By.id("save")).click();
         Thread.sleep(SLEEP_DURATION);
 
