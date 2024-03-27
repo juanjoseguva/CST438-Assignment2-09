@@ -147,6 +147,91 @@ public class StudentControllerUnitTest {
         assertEquals("already enrolled in this section", message);
     }
 
+    @Test
+    public void enrollinSectionButInvalidSectionNo() throws Exception{
+        MockHttpServletResponse response;
+
+        // Create DTO with data for new assignment
+        EnrollmentDTO enrollment = new EnrollmentDTO(
+                0,
+                "A",
+                3,
+                "thomas edison",
+                "tedison@csumb.edu",
+                "cst363",
+                1,
+                58,
+                "052",
+                "104",
+                "M W 10:00-11:50",
+                4,
+                2024,
+                "Spring"
+        );
+
+        // issue a http POST request to SpringTestServer
+        // specify MediaType for request and response data
+        // convert section to String data and set as request content
+        response = mvc.perform(
+                        MockMvcRequestBuilders
+                                .post("/enrollments/sections/"+enrollment.sectionNo()+"/?studentId="+enrollment.studentId())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(enrollment)))
+                .andReturn()
+                .getResponse();
+
+        // We should get a NOT_FOUND 404 error
+        assertEquals(404, response.getStatus());
+
+        // check the expected error message
+        String message = response.getErrorMessage();
+        assertEquals("section not found 58", message);
+
+    }
+
+    @Test
+    public void enrollinSectionButPastDeadline() throws Exception{
+        MockHttpServletResponse response;
+
+        // Create DTO with data for new assignment
+        EnrollmentDTO enrollment = new EnrollmentDTO(
+                0,
+                "A",
+                3,
+                "thomas edison",
+                "tedison@csumb.edu",
+                "cst363",
+                9,
+                9,
+                "052",
+                "104",
+                "M W 10:00-11:50",
+                4,
+                2024,
+                "Spring"
+        );
+
+        // issue a http POST request to SpringTestServer
+        // specify MediaType for request and response data
+        // convert section to String data and set as request content
+        response = mvc.perform(
+                        MockMvcRequestBuilders
+                                .post("/enrollments/sections/"+enrollment.sectionNo()+"?studentId="+enrollment.studentId())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(enrollment)))
+                .andReturn()
+                .getResponse();
+
+        // check the response code for 200 meaning OK
+        assertEquals(400, response.getStatus());
+
+        // check the expected error message
+        String message = response.getErrorMessage();
+        assertEquals("Invalid date", message);
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
