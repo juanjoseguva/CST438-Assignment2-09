@@ -48,7 +48,7 @@ public class EnrollmentControllerUnitTest {
 
         // Create DTO with data for new assignment
         EnrollmentDTO enrollment0 = new EnrollmentDTO(
-                0,
+                1,
                 "B",
                 3,
                 "thomas edison",
