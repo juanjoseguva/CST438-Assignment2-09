@@ -48,7 +48,7 @@ public class AssignmentControllerSystemTest {
 
     }
 
-    /*
+
     @AfterEach
     public void destroyDriver() {
         if (driver != null) {
@@ -58,8 +58,6 @@ public class AssignmentControllerSystemTest {
             driver = null;
         }
     }
-
-     */
 
     @Test
     public void systemTestGradeAssignment() throws Exception {
