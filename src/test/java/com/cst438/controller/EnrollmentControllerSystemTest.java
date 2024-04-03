@@ -56,10 +56,6 @@ public class EnrollmentControllerSystemTest {
 
     @Test
     public void systemTestEnterFinalGrade() throws Exception {
-        // add first available section
-        // verify enrollment appears on schedule
-        // drop course
-
         //Input the proper year and semester
         driver.findElement(By.id("year")).sendKeys("2024");
         driver.findElement(By.id("semester")).sendKeys("Spring");
@@ -72,7 +68,6 @@ public class EnrollmentControllerSystemTest {
         Thread.sleep(SLEEP_DURATION);
 
         //change grade for all students
-
         List <WebElement> changeGradeButt = driver.findElements(By.name("changer"));
         for(WebElement changeGrade:changeGradeButt){
             changeGrade.click();
