@@ -1,5 +1,10 @@
 package com.cst438.service;
 
+import com.cst438.domain.Enrollment;
+import com.cst438.dto.CourseDTO;
+import com.cst438.dto.EnrollmentDTO;
+import com.cst438.dto.SectionDTO;
+import com.cst438.dto.UserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -26,6 +31,50 @@ public class GradebookServiceProxy {
         //TODO implement this message
     }
 
+
+    //course related methods
+    public void addCourse(CourseDTO courseDTO){
+        sendMessage("addCourse " +asJsonString(courseDTO));
+    }
+    public void updateCourse(CourseDTO courseDTO){
+        sendMessage("updateCourse " + asJsonString(courseDTO) );
+    }
+
+    public void deleteCourse(CourseDTO courseDTO) {
+        sendMessage("deleteCourse " + asJsonString(courseDTO));
+    }
+
+    //section related methods
+    public void addSection(SectionDTO sectionDTO){
+        sendMessage("addSection " + asJsonString(sectionDTO));
+    }
+    public void updateSection(SectionDTO sectionDTO){
+        sendMessage( "updateSection " + asJsonString(sectionDTO));
+    }
+    public void deleteSection(SectionDTO sectionDTO) {
+        sendMessage("deleteSection " + asJsonString(sectionDTO));
+    }
+
+    //student related methods
+    public void addCourse(EnrollmentDTO enrollmentDTO){
+        sendMessage("addCourse " + asJsonString(enrollmentDTO));
+    }
+    public void dropCourse(EnrollmentDTO enrollmentDTO){
+        sendMessage("dropCourse " + asJsonString(enrollmentDTO));
+    }
+
+    //user related methods
+    public void createUser(UserDTO userDTO){
+        sendMessage("createUser " + asJsonString(userDTO));
+    }
+    public void updateUser(UserDTO userDTO){
+        sendMessage("updateUser " + asJsonString(userDTO));
+    }
+    public void deletUser(UserDTO userDTO){
+        sendMessage("deleteUser " + asJsonString(userDTO));
+    }
+
+    //utility methods
     private void sendMessage(String s) {
         rabbitTemplate.convertAndSend(gradebookServiceQueue.getName(), s);
     }
