@@ -142,7 +142,7 @@ public class SectionController {
                     "",
                     ""
             );
-            gradebookServiceProxy.updateSection(sectionDTO);
+            gradebookServiceProxy.deleteSection(sectionDTO);
         }
     }
 

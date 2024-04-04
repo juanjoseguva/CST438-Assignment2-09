@@ -1,6 +1,7 @@
 package com.cst438.service;
 
 import com.cst438.domain.Enrollment;
+import com.cst438.domain.EnrollmentRepository;
 import com.cst438.dto.CourseDTO;
 import com.cst438.dto.EnrollmentDTO;
 import com.cst438.dto.SectionDTO;
@@ -26,9 +27,23 @@ public class GradebookServiceProxy {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
+
     @RabbitListener(queues = "registrar_service")
     public void receiveFromGradebook(String message)  {
-        //TODO implement this message
+        String[] messageParts = message.split(" ");
+        String action = messageParts[0];
+        String dto = messageParts[1];
+
+        if(action == "updateGrade"){
+            EnrollmentDTO enrollmentDTO = fromJsonString(dto, EnrollmentDTO.class);
+            Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
+            if(e!=null){
+                e.setGrade(enrollmentDTO.grade());
+                enrollmentRepository.save(e);
+            }
+        }
     }
 
 
@@ -57,7 +72,7 @@ public class GradebookServiceProxy {
 
     //student related methods
     public void addCourse(EnrollmentDTO enrollmentDTO){
-        sendMessage("addCourse " + asJsonString(enrollmentDTO));
+        sendMessage("addCourseStudent " + asJsonString(enrollmentDTO));
     }
     public void dropCourse(EnrollmentDTO enrollmentDTO){
         sendMessage("dropCourse " + asJsonString(enrollmentDTO));
@@ -70,7 +85,7 @@ public class GradebookServiceProxy {
     public void updateUser(UserDTO userDTO){
         sendMessage("updateUser " + asJsonString(userDTO));
     }
-    public void deletUser(UserDTO userDTO){
+    public void deleteUser(UserDTO userDTO){
         sendMessage("deleteUser " + asJsonString(userDTO));
     }
 

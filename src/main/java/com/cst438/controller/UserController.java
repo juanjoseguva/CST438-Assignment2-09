@@ -107,7 +107,7 @@ public class UserController {
                     user.getEmail(),
                     user.getType()
             );
-            gradebookServiceProxy.deletUser(userDto);
+            gradebookServiceProxy.deleteUser(userDto);
         }
 
     }
