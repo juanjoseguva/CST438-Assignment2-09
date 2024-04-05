@@ -35,6 +35,7 @@ public class CourseController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
     GradebookServiceProxy gradebookServiceProxy;
 
 
