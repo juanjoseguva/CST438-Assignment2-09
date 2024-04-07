@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 //TODO: file copied from RegistartServiceProxy
 // some items may need to be adjusted
 @Service
-public class GradebookServiceProxy {
+public class RegistrarServiceProxy {
 
     Queue registrarServiceQueue = new Queue("registrar_service", true);
 

@@ -35,6 +35,8 @@ public class AssignmentController {
     EnrollmentRepository enrollmentRepository;
     @Autowired
     GradeRepository gradeRepository;
+    @Autowired
+    UserRepository userRepository;
 
     // instructor lists assignments for a section.  Assignments ordered by due date.
     // logged in user must be the instructor for the section
@@ -229,11 +231,7 @@ public class AssignmentController {
             @RequestParam("year") int year,
             @RequestParam("semester") String semester) {
 
-        logger.info("Fetching sections for instructor: {}, year: {}, semester: {}", instructorEmail, year, semester);
-
         List<Section> sections = sectionRepository.findByInstructorEmailAndYearAndSemester(instructorEmail, year, semester);
-
-        logger.info("Found {} sections for instructor: {}, year: {}, semester: {}", sections.size(), instructorEmail, year, semester);
 
         List<SectionDTO> dto_list = new ArrayList<>();
         for (Section s : sections) {
