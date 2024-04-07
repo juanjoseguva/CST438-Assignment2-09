@@ -1,5 +1,6 @@
 package com.cst438.service;
 
+import com.cst438.dto.EnrollmentDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -26,8 +27,11 @@ public class RegistrarServiceProxy {
     @RabbitListener(queues = "gradebook_service")
     public void receiveFromRegistrar(String message)  {
          //TODO implement this message 
-} 
+    }
 
+    public void updateEnrollment(EnrollmentDTO enrollmentDTO){
+        sendMessage("updateEnrollment " + asJsonString(enrollmentDTO));
+    }
 
     private void sendMessage(String s) {
         rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
