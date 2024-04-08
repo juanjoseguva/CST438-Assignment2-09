@@ -39,9 +39,6 @@ public class AssignmentController {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    RegistrarServiceProxy registrarServiceProxy;
-
     // instructor lists assignments for a section.  Assignments ordered by due date.
     // logged in user must be the instructor for the section
     @GetMapping("/sections/{secNo}/assignments")
@@ -63,10 +60,6 @@ public class AssignmentController {
                     a.getSection().getSectionNo()
             ));
         }
-
-        // hint: use the assignment repository method
-        //  findBySectionNoOrderByDueDate to return
-        //  a list of assignments
 
         return dto_list;
     }
