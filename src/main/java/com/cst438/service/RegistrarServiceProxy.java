@@ -52,7 +52,7 @@ public class RegistrarServiceProxy {
                     e.setGrade(enrollmentDTO.grade());
                     enrollmentRepository.save(e);
                 }
-            } else if (action == "addCourse") {
+            } else if (action.equals("addCourse")) {
                 CourseDTO courseDTO = fromJsonString(dto, CourseDTO.class);
                 Course c = new Course();
                 c.setTitle(courseDTO.title());
