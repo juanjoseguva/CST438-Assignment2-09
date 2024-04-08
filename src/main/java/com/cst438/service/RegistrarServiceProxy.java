@@ -1,9 +1,8 @@
 package com.cst438.service;
 
-import com.cst438.domain.AssignmentRepository;
-import com.cst438.domain.Enrollment;
-import com.cst438.domain.EnrollmentRepository;
+import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
+import com.cst438.dto.CourseDTO;
 import com.cst438.dto.EnrollmentDTO;
 import com.cst438.dto.GradeDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +34,9 @@ public class RegistrarServiceProxy {
     @Autowired
     AssignmentRepository assignmentRepository;
 
+    @Autowired
+    CourseRepository courseRepository;
+
     @RabbitListener(queues = "gradebook_service")
     public void receiveFromRegistrar(String message)  {
         try {
@@ -42,6 +44,7 @@ public class RegistrarServiceProxy {
             String action = messageParts[0];
             String dto = messageParts[1];
 
+            //TODO: add remainder of actions
             if (action == "updateGrade") {
                 EnrollmentDTO enrollmentDTO = fromJsonString(dto, EnrollmentDTO.class);
                 Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
@@ -49,6 +52,14 @@ public class RegistrarServiceProxy {
                     e.setGrade(enrollmentDTO.grade());
                     enrollmentRepository.save(e);
                 }
+            } else if (action == "addCourse") {
+                CourseDTO courseDTO = fromJsonString(dto, CourseDTO.class);
+                Course c = new Course();
+                c.setTitle(courseDTO.title());
+                c.setCourseId(courseDTO.courseId());
+                c.setCredits(courseDTO.credits());
+                courseRepository.save(c);
+
             }
         } catch (Exception e){
             System.out.println("Exception in receiveFromRegistrar "+ e.getMessage());
@@ -61,18 +72,18 @@ public class RegistrarServiceProxy {
     }
 
     //the following methods correspond to controller methods but may not be necessary
-    public void updateGrades(GradeDTO gradeDTO){
-        sendMessage("updateGrades " + asJsonString(gradeDTO));
-    }
-    public void createAssignment(AssignmentDTO assignmentDTO) {
-        sendMessage("addAssignment " + asJsonString(assignmentDTO));
-    }
-    public void updateAssignment(AssignmentDTO assignmentDTO) {
-        sendMessage("updateAssignment " + asJsonString(assignmentDTO));
-    }
-    public void deleteAssignment(AssignmentDTO assignmentDTO) {
-        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
-    }
+//    public void updateGrades(GradeDTO gradeDTO){
+//        sendMessage("updateGrades " + asJsonString(gradeDTO));
+//    }
+//    public void createAssignment(AssignmentDTO assignmentDTO) {
+//        sendMessage("addAssignment " + asJsonString(assignmentDTO));
+//    }
+//    public void updateAssignment(AssignmentDTO assignmentDTO) {
+//        sendMessage("updateAssignment " + asJsonString(assignmentDTO));
+//    }
+//    public void deleteAssignment(AssignmentDTO assignmentDTO) {
+//        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
+//    }
 
 
 
