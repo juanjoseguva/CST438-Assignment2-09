@@ -1,6 +1,11 @@
 package com.cst438.service;
 
+import com.cst438.domain.AssignmentRepository;
+import com.cst438.domain.Enrollment;
+import com.cst438.domain.EnrollmentRepository;
+import com.cst438.dto.AssignmentDTO;
 import com.cst438.dto.EnrollmentDTO;
+import com.cst438.dto.GradeDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -9,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-//TODO: file copied from RegistartServiceProxy
+//TODO: file copied from RegistarServiceProxy
 // some items may need to be adjusted
 @Service
 public class RegistrarServiceProxy {
@@ -24,14 +29,52 @@ public class RegistrarServiceProxy {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    AssignmentRepository assignmentRepository;
+
     @RabbitListener(queues = "gradebook_service")
     public void receiveFromRegistrar(String message)  {
-         //TODO implement this message 
+        try {
+            String[] messageParts = message.split(" ");
+            String action = messageParts[0];
+            String dto = messageParts[1];
+
+            if (action == "updateGrade") {
+                EnrollmentDTO enrollmentDTO = fromJsonString(dto, EnrollmentDTO.class);
+                Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
+                if (e != null) {
+                    e.setGrade(enrollmentDTO.grade());
+                    enrollmentRepository.save(e);
+                }
+            }
+        } catch (Exception e){
+            System.out.println("Exception in receiveFromRegistrar "+ e.getMessage());
+        }
     }
 
+    //enrollment methods
     public void updateEnrollment(EnrollmentDTO enrollmentDTO){
         sendMessage("updateEnrollment " + asJsonString(enrollmentDTO));
     }
+
+    //the following methods correspond to controller methods but may not be necessary
+    public void updateGrades(GradeDTO gradeDTO){
+        sendMessage("updateGrades " + asJsonString(gradeDTO));
+    }
+    public void createAssignment(AssignmentDTO assignmentDTO) {
+        sendMessage("addAssignment " + asJsonString(assignmentDTO));
+    }
+    public void updateAssignment(AssignmentDTO assignmentDTO) {
+        sendMessage("updateAssignment " + asJsonString(assignmentDTO));
+    }
+    public void deleteAssignment(AssignmentDTO assignmentDTO) {
+        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
+    }
+
+
 
     private void sendMessage(String s) {
         rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
