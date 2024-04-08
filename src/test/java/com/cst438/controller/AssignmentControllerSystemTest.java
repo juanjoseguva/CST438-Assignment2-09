@@ -19,7 +19,7 @@ public class AssignmentControllerSystemTest {
 
     //Path to selenium driver
     public static final String CHROME_DRIVER_FILE_LOCATION =
-            "/home/juangutierrez/ChromeDriver/chromedriver-linux64/chromedriver";
+            "/Users/kyleabsten/Library/Mobile Documents/com~apple~CloudDocs/CSUMB/CST438_SoftwareEngineering/downloads/chromedriver-mac-arm64/chromedriver";
 
     //Url of react/nodejs server
     public static final String reactURL = "http://localhost:3000";
@@ -85,6 +85,7 @@ public class AssignmentControllerSystemTest {
             field.sendKeys("88");
         }
         driver.findElement(By.id("saveGrades")).click();
+        Thread.sleep(SLEEP_DURATION);
         String message = driver.findElement(By.id("editMessage")).getText();
         assertEquals("Grades saved!", message);
         driver.findElement(By.id("closeGrades")).click();
