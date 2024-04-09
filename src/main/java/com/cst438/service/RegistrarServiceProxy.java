@@ -56,100 +56,100 @@ public class RegistrarServiceProxy {
             switch(action){
 
                 case "addCourse":
-                    CourseDTO course = fromJsonString(dtoString, CourseDTO.class);
-                    Course c = new Course();
-                    c.setCredits(course.credits());
-                    c.setTitle(course.title());
-                    c.setCourseId(course.courseId());
-                    courseRepository.save(c);
+                    CourseDTO course0 = fromJsonString(dtoString, CourseDTO.class);
+                    Course c0 = new Course();
+                    c0.setCredits(course0.credits());
+                    c0.setTitle(course0.title());
+                    c0.setCourseId(course0.courseId());
+                    courseRepository.save(c0);
 
                     break;
                 case "updateCourse":
-                    course = fromJsonString(dtoString, CourseDTO.class);
-                    c = courseRepository.findById(course.courseId()).orElse(null);
-                    if (c==null) {
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+course.courseId());
+                    CourseDTO course1 = fromJsonString(dtoString, CourseDTO.class);
+                    Course c1 = courseRepository.findById(course1.courseId()).orElse(null);
+                    if (c1==null) {
+                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+course1.courseId());
                     } else {
-                        c.setTitle(course.title());
-                        c.setCredits(course.credits());
-                        courseRepository.save(c);
+                        c1.setTitle(course1.title());
+                        c1.setCredits(course1.credits());
+                        courseRepository.save(c1);
                     }
 
                     break;
                 case "deleteCourse":
-                    course = fromJsonString(dtoString, CourseDTO.class);
-                    c = courseRepository.findById(course.courseId()).orElse(null);
+                    CourseDTO course2 = fromJsonString(dtoString, CourseDTO.class);
+                    Course c2 = courseRepository.findById(course2.courseId()).orElse(null);
                     // if course does not exist, do nothing.
-                    if (c!=null) {
+                    if (c2!=null) {
                         CourseDTO courseDTO = new CourseDTO(
-                                c.getCourseId(),
-                                c.getTitle(),
-                                c.getCredits()
+                                c2.getCourseId(),
+                                c2.getTitle(),
+                                c2.getCredits()
                         );
                     }
-                    courseRepository.delete(c);
+                    courseRepository.delete(c2);
 
                     break;
                 case "addSection":
-                    SectionDTO section = fromJsonString(dtoString, SectionDTO.class);
-                    c = courseRepository.findById(section.courseId()).orElse(null);
-                    if (c == null ){
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+section.courseId());
+                    SectionDTO section0 = fromJsonString(dtoString, SectionDTO.class);
+                    Course c3 = courseRepository.findById(section0.courseId()).orElse(null);
+                    if (c3 == null ){
+                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+section0.courseId());
                     }
                     Section s = new Section();
-                    s.setCourse(c);
+                    s.setCourse(c3);
 
-                    Term term = termRepository.findByYearAndSemester(section.year(), section.semester());
+                    Term term = termRepository.findByYearAndSemester(section0.year(), section0.semester());
                     if (term == null) {
                         throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "year, semester invalid ");
                     }
                     s.setTerm(term);
 
-                    s.setSecId(section.secId());
-                    s.setBuilding(section.building());
-                    s.setRoom(section.room());
-                    s.setTimes(section.times());
+                    s.setSecId(section0.secId());
+                    s.setBuilding(section0.building());
+                    s.setRoom(section0.room());
+                    s.setTimes(section0.times());
 
                     User instructor = null;
-                    if (section.instructorEmail()==null || section.instructorEmail().equals("")) {
+                    if (section0.instructorEmail()==null || section0.instructorEmail().equals("")) {
                         s.setInstructor_email("");
                     } else {
-                        instructor = userRepository.findByEmail(section.instructorEmail());
+                        instructor = userRepository.findByEmail(section0.instructorEmail());
                         if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section.instructorEmail());
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section0.instructorEmail());
                         }
-                        s.setInstructor_email(section.instructorEmail());
+                        s.setInstructor_email(section0.instructorEmail());
                     }
                     sectionRepository.save(s);
 
                     break;
                 case "updateSection":
-                    section = fromJsonString(dtoString, SectionDTO.class);
-                    s = sectionRepository.findById(section.secNo()).orElse(null);
+                    SectionDTO section1 = fromJsonString(dtoString, SectionDTO.class);
+                    s = sectionRepository.findById(section1.secNo()).orElse(null);
                     if (s==null) {
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found "+section.secNo());
+                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found "+section1.secNo());
                     }
-                    s.setSecId(section.secId());
-                    s.setBuilding(section.building());
-                    s.setRoom(section.room());
-                    s.setTimes(section.times());
+                    s.setSecId(section1.secId());
+                    s.setBuilding(section1.building());
+                    s.setRoom(section1.room());
+                    s.setTimes(section1.times());
 
                     instructor = null;
-                    if (section.instructorEmail()==null || section.instructorEmail().equals("")) {
+                    if (section1.instructorEmail()==null || section1.instructorEmail().equals("")) {
                         s.setInstructor_email("");
                     } else {
-                        instructor = userRepository.findByEmail(section.instructorEmail());
+                        instructor = userRepository.findByEmail(section1.instructorEmail());
                         if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section.instructorEmail());
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section1.instructorEmail());
                         }
-                        s.setInstructor_email(section.instructorEmail());
+                        s.setInstructor_email(section1.instructorEmail());
                     }
                     sectionRepository.save(s);
 
                     break;
                 case "deleteSection":
-                    section = fromJsonString(dtoString, SectionDTO.class);
-                    s = sectionRepository.findById(section.secNo()).orElse(null);
+                    SectionDTO section3 = fromJsonString(dtoString, SectionDTO.class);
+                    s = sectionRepository.findById(section3.secNo()).orElse(null);
                     if (s != null) {
                         sectionRepository.delete(s);
                     }
@@ -180,6 +180,8 @@ public class RegistrarServiceProxy {
 //    public void deleteAssignment(AssignmentDTO assignmentDTO) {
 //        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
 //    }
+
+
 
 
 
