@@ -213,7 +213,9 @@ public class RegistrarServiceProxy {
 
     public void createUser(UserDTO user){
         User u = new User();
+        u.setId(user.id());
         u.setType(user.type());
+        u.setPassword("temp");
         u.setEmail(user.email());
         u.setName(user.name());
         userRepository.save(u);
