@@ -37,7 +37,7 @@ public class GradebookServiceProxy {
             String action = messageParts[0];
             String dto = messageParts[1];
 
-            if (action == "updateGrade") {
+        if (action.equals("updateEnrollmentGrade")) {
                 EnrollmentDTO enrollmentDTO = fromJsonString(dto, EnrollmentDTO.class);
                 Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
                 if (e != null) {
