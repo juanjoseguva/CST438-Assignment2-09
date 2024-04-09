@@ -212,16 +212,29 @@ public class RegistrarServiceProxy {
     }
 
     public void createUser(UserDTO user){
-        //TODO
+        User u = new User();
+        u.setType(user.type());
+        u.setEmail(user.email());
+        u.setName(user.name());
+        userRepository.save(u);
     }
 
     public void updateUser(UserDTO user){
-        //TODO
+        User u = userRepository.findById(user.id()).orElse(null);
+        if (u==null) {
+            throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "uer not found " + user.id());
+        } else {
+            u.setName(user.name());
+            u.setType(user.type());
+            u.setEmail(user.email());
+            userRepository.save(u);
+        }
     }
 
     public void deleteUser(UserDTO user){
-        //TODO
+        User u = userRepository.findById(user.id()).orElse(null);
+        if (u!=null){
+            userRepository.delete(u);
+        }
     }
 }
-
-
