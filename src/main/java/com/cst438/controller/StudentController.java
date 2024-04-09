@@ -35,6 +35,7 @@ public class StudentController {
     @Autowired
     EnrollmentRepository enrollmentRepository;
 
+    @Autowired
     GradebookServiceProxy gradebookServiceProxy;
 
 
