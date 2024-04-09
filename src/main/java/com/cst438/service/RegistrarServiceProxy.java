@@ -101,6 +101,30 @@ public class RegistrarServiceProxy {
 //        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
 //    }
 
+
+
+
+    private void sendMessage(String s) {
+        rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
+    }
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static <T> T  fromJsonString(String str, Class<T> valueType ) {
+        try {
+            return new ObjectMapper().readValue(str, valueType);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    // registrar-related functions
+
     public void addCourse(CourseDTO course){
         Course c = new Course();
         c.setCredits(course.credits());
@@ -194,25 +218,6 @@ public class RegistrarServiceProxy {
             sectionRepository.delete(s);
         }
     }
-
-
-
-
-    private void sendMessage(String s) {
-        rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
-    }
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private static <T> T  fromJsonString(String str, Class<T> valueType ) {
-        try {
-            return new ObjectMapper().readValue(str, valueType);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
+
+
