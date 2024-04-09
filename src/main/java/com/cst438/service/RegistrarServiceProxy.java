@@ -75,6 +75,15 @@ public class RegistrarServiceProxy {
                 case "deleteSection":
                     deleteSection(fromJsonString(dtoString, SectionDTO.class));
                     break;
+                case "createUser":
+                    createUser(fromJsonString(dtoString, UserDTO.class));
+                    break;
+                case "updateUser":
+                    updateUser(fromJsonString(dtoString, UserDTO.class));
+                    break;
+                case "deleteUser":
+                    deleteUser(fromJsonString(dtoString, UserDTO.class));
+                    break;
             }
 
         } catch (Exception e){
@@ -200,6 +209,18 @@ public class RegistrarServiceProxy {
         if (s != null) {
             sectionRepository.delete(s);
         }
+    }
+
+    public void createUser(UserDTO user){
+        //TODO
+    }
+
+    public void updateUser(UserDTO user){
+        //TODO
+    }
+
+    public void deleteUser(UserDTO user){
+        //TODO
     }
 }
 
