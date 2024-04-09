@@ -26,6 +26,7 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
     GradebookServiceProxy gradebookServiceProxy;
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
