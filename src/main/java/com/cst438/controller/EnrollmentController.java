@@ -61,7 +61,7 @@ public class EnrollmentController {
             // Update the grade and save back to the database
             enrollment.setGrade(dto.grade());
             enrollmentRepository.save(enrollment);
-            registrarServiceProxy.updateEnrollment(dto);
+            registrarServiceProxy.updateEnrollmentGrade(dto);
         }
     }
 }
