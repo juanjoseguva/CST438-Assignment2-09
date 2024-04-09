@@ -83,26 +83,9 @@ public class RegistrarServiceProxy {
     }
 
     //enrollment methods
-    public void updateEnrollment(EnrollmentDTO enrollmentDTO){
-        sendMessage("updateGrade" + asJsonString(enrollmentDTO));
+    public void updateEnrollmentGrade(EnrollmentDTO enrollmentDTO){
+        sendMessage("updateEnrollmentGrade " + asJsonString(enrollmentDTO));
     }
-
-    //the following methods correspond to controller methods but may not be necessary
-//    public void updateGrades(GradeDTO gradeDTO){
-//        sendMessage("updateGrades " + asJsonString(gradeDTO));
-//    }
-//    public void createAssignment(AssignmentDTO assignmentDTO) {
-//        sendMessage("addAssignment " + asJsonString(assignmentDTO));
-//    }
-//    public void updateAssignment(AssignmentDTO assignmentDTO) {
-//        sendMessage("updateAssignment " + asJsonString(assignmentDTO));
-//    }
-//    public void deleteAssignment(AssignmentDTO assignmentDTO) {
-//        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
-//    }
-
-
-
 
     private void sendMessage(String s) {
         rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
