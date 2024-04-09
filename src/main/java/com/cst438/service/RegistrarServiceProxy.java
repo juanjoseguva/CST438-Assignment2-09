@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 //TODO: file copied from RegistarServiceProxy
@@ -56,104 +58,22 @@ public class RegistrarServiceProxy {
             switch(action){
 
                 case "addCourse":
-                    CourseDTO course0 = fromJsonString(dtoString, CourseDTO.class);
-                    Course c0 = new Course();
-                    c0.setCredits(course0.credits());
-                    c0.setTitle(course0.title());
-                    c0.setCourseId(course0.courseId());
-                    courseRepository.save(c0);
-
+                    addCourse(fromJsonString(dtoString, CourseDTO.class));
                     break;
                 case "updateCourse":
-                    CourseDTO course1 = fromJsonString(dtoString, CourseDTO.class);
-                    Course c1 = courseRepository.findById(course1.courseId()).orElse(null);
-                    if (c1==null) {
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+course1.courseId());
-                    } else {
-                        c1.setTitle(course1.title());
-                        c1.setCredits(course1.credits());
-                        courseRepository.save(c1);
-                    }
-
+                    updateCourse(fromJsonString(dtoString, CourseDTO.class));
                     break;
                 case "deleteCourse":
-                    CourseDTO course2 = fromJsonString(dtoString, CourseDTO.class);
-                    Course c2 = courseRepository.findById(course2.courseId()).orElse(null);
-                    // if course does not exist, do nothing.
-                    if (c2!=null) {
-                        CourseDTO courseDTO = new CourseDTO(
-                                c2.getCourseId(),
-                                c2.getTitle(),
-                                c2.getCredits()
-                        );
-                    }
-                    courseRepository.delete(c2);
-
+                    deleteCourse(fromJsonString(dtoString, CourseDTO.class));
                     break;
                 case "addSection":
-                    SectionDTO section0 = fromJsonString(dtoString, SectionDTO.class);
-                    Course c3 = courseRepository.findById(section0.courseId()).orElse(null);
-                    if (c3 == null ){
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+section0.courseId());
-                    }
-                    Section s = new Section();
-                    s.setCourse(c3);
-
-                    Term term = termRepository.findByYearAndSemester(section0.year(), section0.semester());
-                    if (term == null) {
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "year, semester invalid ");
-                    }
-                    s.setTerm(term);
-
-                    s.setSecId(section0.secId());
-                    s.setBuilding(section0.building());
-                    s.setRoom(section0.room());
-                    s.setTimes(section0.times());
-
-                    User instructor = null;
-                    if (section0.instructorEmail()==null || section0.instructorEmail().equals("")) {
-                        s.setInstructor_email("");
-                    } else {
-                        instructor = userRepository.findByEmail(section0.instructorEmail());
-                        if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section0.instructorEmail());
-                        }
-                        s.setInstructor_email(section0.instructorEmail());
-                    }
-                    sectionRepository.save(s);
-
+                    addSection(fromJsonString(dtoString, SectionDTO.class));
                     break;
                 case "updateSection":
-                    SectionDTO section1 = fromJsonString(dtoString, SectionDTO.class);
-                    s = sectionRepository.findById(section1.secNo()).orElse(null);
-                    if (s==null) {
-                        throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found "+section1.secNo());
-                    }
-                    s.setSecId(section1.secId());
-                    s.setBuilding(section1.building());
-                    s.setRoom(section1.room());
-                    s.setTimes(section1.times());
-
-                    instructor = null;
-                    if (section1.instructorEmail()==null || section1.instructorEmail().equals("")) {
-                        s.setInstructor_email("");
-                    } else {
-                        instructor = userRepository.findByEmail(section1.instructorEmail());
-                        if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section1.instructorEmail());
-                        }
-                        s.setInstructor_email(section1.instructorEmail());
-                    }
-                    sectionRepository.save(s);
-
+                    updateSection(fromJsonString(dtoString, SectionDTO.class));
                     break;
                 case "deleteSection":
-                    SectionDTO section3 = fromJsonString(dtoString, SectionDTO.class);
-                    s = sectionRepository.findById(section3.secNo()).orElse(null);
-                    if (s != null) {
-                        sectionRepository.delete(s);
-                    }
-
+                    deleteSection(fromJsonString(dtoString, SectionDTO.class));
                     break;
             }
 
@@ -181,6 +101,99 @@ public class RegistrarServiceProxy {
 //        sendMessage("deleteAssignment " + asJsonString(assignmentDTO));
 //    }
 
+    public void addCourse(CourseDTO course){
+        Course c = new Course();
+        c.setCredits(course.credits());
+        c.setTitle(course.title());
+        c.setCourseId(course.courseId());
+        courseRepository.save(c);
+    }
+
+    public void updateCourse(CourseDTO course){
+        Course c = courseRepository.findById(course.courseId()).orElse(null);
+        if (c==null) {
+            throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+course.courseId());
+        } else {
+            c.setTitle(course.title());
+            c.setCredits(course.credits());
+            courseRepository.save(c);
+        }
+    }
+
+    public void deleteCourse(CourseDTO course){
+        Course c = courseRepository.findById(course.courseId()).orElse(null);
+        // if course does not exist, do nothing.
+        if (c!=null) {
+            CourseDTO courseDTO = new CourseDTO(
+                    c.getCourseId(),
+                    c.getTitle(),
+                    c.getCredits()
+            );
+        }
+        courseRepository.delete(c);
+    }
+
+    public void addSection(SectionDTO section){
+        Course c = courseRepository.findById(section.courseId()).orElse(null);
+        if (c == null ){
+            throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "course not found "+section.courseId());
+        }
+        Section s = new Section();
+        s.setCourse(c);
+
+        Term term = termRepository.findByYearAndSemester(section.year(), section.semester());
+        if (term == null) {
+            throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "year, semester invalid ");
+        }
+        s.setTerm(term);
+
+        s.setSecId(section.secId());
+        s.setBuilding(section.building());
+        s.setRoom(section.room());
+        s.setTimes(section.times());
+
+        User instructor = null;
+        if (section.instructorEmail()==null || section.instructorEmail().equals("")) {
+            s.setInstructor_email("");
+        } else {
+            instructor = userRepository.findByEmail(section.instructorEmail());
+            if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section.instructorEmail());
+            }
+            s.setInstructor_email(section.instructorEmail());
+        }
+        sectionRepository.save(s);
+    }
+
+    public void updateSection(SectionDTO section){
+        Section s = sectionRepository.findById(section.secNo()).orElse(null);
+        if (s==null) {
+            throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found "+section.secNo());
+        }
+        s.setSecId(section.secId());
+        s.setBuilding(section.building());
+        s.setRoom(section.room());
+        s.setTimes(section.times());
+
+        User instructor = null;
+        if (section.instructorEmail()==null || section.instructorEmail().equals("")) {
+            s.setInstructor_email("");
+        } else {
+            instructor = userRepository.findByEmail(section.instructorEmail());
+            if (instructor == null || !instructor.getType().equals("INSTRUCTOR")) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "email not found or not an instructor " + section.instructorEmail());
+            }
+            s.setInstructor_email(section.instructorEmail());
+        }
+        sectionRepository.save(s);
+    }
+
+    public void deleteSection(SectionDTO section){
+        Section s = sectionRepository.findById(section.secNo()).orElse(null);
+        if (s != null) {
+            sectionRepository.delete(s);
+        }
+    }
 
 
 
