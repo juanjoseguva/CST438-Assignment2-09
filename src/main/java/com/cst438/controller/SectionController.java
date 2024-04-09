@@ -30,6 +30,7 @@ public class SectionController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
     GradebookServiceProxy gradebookServiceProxy;
 
 
