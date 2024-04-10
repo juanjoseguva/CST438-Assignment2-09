@@ -66,21 +66,22 @@ public class SectionController {
             }
             s.setInstructor_email(section.instructorEmail());
         }
+        Section savedSection = sectionRepository.save(s);
+
 
         SectionDTO sectionDTO = new SectionDTO(
-                s.getSectionNo(),
-                s.getTerm().getYear(),
-                s.getTerm().getSemester(),
-                s.getCourse().getCourseId(),
-                s.getSecId(),
-                s.getBuilding(),
-                s.getRoom(),
-                s.getTimes(),
+                savedSection.getSectionNo(),
+                savedSection.getTerm().getYear(),
+                savedSection.getTerm().getSemester(),
+                savedSection.getCourse().getCourseId(),
+                savedSection.getSecId(),
+                savedSection.getBuilding(),
+                savedSection.getRoom(),
+                savedSection.getTimes(),
                 (instructor!=null) ? instructor.getName() : "",
                 (instructor!=null) ? instructor.getEmail() : ""
         );
 
-        sectionRepository.save(s);
         gradebookServiceProxy.addSection(sectionDTO);
         return sectionDTO;
     }
