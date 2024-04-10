@@ -163,6 +163,7 @@ public class RegistrarServiceProxy {
         }
         s.setTerm(term);
 
+        s.setSectionNo(section.secNo());
         s.setSecId(section.secId());
         s.setBuilding(section.building());
         s.setRoom(section.room());
