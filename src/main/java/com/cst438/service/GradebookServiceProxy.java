@@ -33,7 +33,7 @@ public class GradebookServiceProxy {
     @RabbitListener(queues = "registrar_service")
     public void receiveFromGradebook(String message)  {
         try {
-            String[] messageParts = message.split(" ");
+            String[] messageParts = message.split(" ", 2);
             String action = messageParts[0];
             String dto = messageParts[1];
 
