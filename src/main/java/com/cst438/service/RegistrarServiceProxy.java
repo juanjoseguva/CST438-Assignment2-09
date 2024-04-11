@@ -115,8 +115,7 @@ public class RegistrarServiceProxy {
     }
 
 
-    // registrar-related functions
-
+    // ADMIN actions
     public void addCourse(CourseDTO course){
         Course c = new Course();
         c.setCredits(course.credits());
@@ -238,6 +237,27 @@ public class RegistrarServiceProxy {
         User u = userRepository.findById(user.id()).orElse(null);
         if (u!=null){
             userRepository.delete(u);
+        }
+    }
+
+    // STUDENT actions
+    public void addCourseStudent(EnrollmentDTO enrollmentDTO){
+        User student = userRepository.findById(3).orElse(null);
+        Section section = sectionRepository.findSectionBySectionNo(enrollmentDTO.sectionNo());
+        Enrollment e = new Enrollment();
+        e.setEnrollmentId(enrollmentDTO.enrollmentId());
+        e.setUser(student);
+        e.setSection(section);
+        enrollmentRepository.save(e);
+    }
+
+    public void dropCourse(EnrollmentDTO enrollmentDTO){
+        System.out.println("entered dropCourse");
+        Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
+        try{
+            enrollmentRepository.delete(e);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "course cannot be dropped");
         }
     }
 }
