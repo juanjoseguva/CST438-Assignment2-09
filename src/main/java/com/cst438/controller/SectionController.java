@@ -2,6 +2,7 @@ package com.cst438.controller;
 
 import com.cst438.domain.*;
 import com.cst438.dto.SectionDTO;
+import com.cst438.service.GradebookServiceProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class SectionController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    GradebookServiceProxy gradebookServiceProxy;
 
 
     // ADMIN function to create a new section
@@ -62,20 +66,24 @@ public class SectionController {
             }
             s.setInstructor_email(section.instructorEmail());
         }
+        Section savedSection = sectionRepository.save(s);
 
-        sectionRepository.save(s);
-        return new SectionDTO(
-                s.getSectionNo(),
-                s.getTerm().getYear(),
-                s.getTerm().getSemester(),
-                s.getCourse().getCourseId(),
-                s.getSecId(),
-                s.getBuilding(),
-                s.getRoom(),
-                s.getTimes(),
+
+        SectionDTO sectionDTO = new SectionDTO(
+                savedSection.getSectionNo(),
+                savedSection.getTerm().getYear(),
+                savedSection.getTerm().getSemester(),
+                savedSection.getCourse().getCourseId(),
+                savedSection.getSecId(),
+                savedSection.getBuilding(),
+                savedSection.getRoom(),
+                savedSection.getTimes(),
                 (instructor!=null) ? instructor.getName() : "",
                 (instructor!=null) ? instructor.getEmail() : ""
         );
+
+        gradebookServiceProxy.addSection(sectionDTO);
+        return sectionDTO;
     }
 
     // ADMIN function to update a section
@@ -102,6 +110,19 @@ public class SectionController {
             s.setInstructor_email(section.instructorEmail());
         }
         sectionRepository.save(s);
+        SectionDTO sectionDTO = new SectionDTO(
+                s.getSectionNo(),
+                s.getTerm().getYear(),
+                s.getTerm().getSemester(),
+                s.getCourse().getCourseId(),
+                s.getSecId(),
+                s.getBuilding(),
+                s.getRoom(),
+                s.getTimes(),
+                (instructor!=null) ? instructor.getName() : "",
+                (instructor!=null) ? instructor.getEmail() : ""
+        );
+        gradebookServiceProxy.updateSection(sectionDTO);
     }
 
     // ADMIN function to create a delete section
@@ -111,6 +132,19 @@ public class SectionController {
         Section s = sectionRepository.findById(sectionno).orElse(null);
         if (s != null) {
             sectionRepository.delete(s);
+            SectionDTO sectionDTO = new SectionDTO(
+                    s.getSectionNo(),
+                    s.getTerm().getYear(),
+                    s.getTerm().getSemester(),
+                    s.getCourse().getCourseId(),
+                    s.getSecId(),
+                    s.getBuilding(),
+                    s.getRoom(),
+                    s.getTimes(),
+                    "",
+                    ""
+            );
+            gradebookServiceProxy.deleteSection(sectionDTO);
         }
     }
 

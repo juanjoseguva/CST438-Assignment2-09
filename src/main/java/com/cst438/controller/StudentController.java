@@ -3,6 +3,7 @@ package com.cst438.controller;
 import com.cst438.domain.*;
 import com.cst438.dto.CourseDTO;
 import com.cst438.dto.EnrollmentDTO;
+import com.cst438.service.GradebookServiceProxy;
 import com.sun.tools.jconsole.JConsoleContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,9 @@ public class StudentController {
 
     @Autowired
     EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    GradebookServiceProxy gradebookServiceProxy;
 
 
    // student gets transcript showing list of all enrollments
@@ -165,22 +169,24 @@ public class StudentController {
             e.setSection(section);
             e.setUser(student);
             enrollmentRepository.save(e);
-            return new EnrollmentDTO(
-              e.getEnrollmentId(),
-              "",
-                studentId,
-                e.getStudent().getName(),
-                e.getStudent().getEmail(),
-                e.getSection().getCourse().getCourseId(),
-                e.getSection().getSecId(),
-                e.getSection().getSectionNo(),
-                e.getSection().getBuilding(),
-                e.getSection().getRoom(),
-                e.getSection().getTimes(),
-                e.getSection().getCourse().getCredits(),
-                e.getSection().getTerm().getYear(),
-                e.getSection().getTerm().getSemester()
+            EnrollmentDTO enrollmentDTO = new EnrollmentDTO(
+                    e.getEnrollmentId(),
+                    "",
+                    studentId,
+                    e.getStudent().getName(),
+                    e.getStudent().getEmail(),
+                    e.getSection().getCourse().getCourseId(),
+                    e.getSection().getSecId(),
+                    e.getSection().getSectionNo(),
+                    e.getSection().getBuilding(),
+                    e.getSection().getRoom(),
+                    e.getSection().getTimes(),
+                    e.getSection().getCourse().getCredits(),
+                    e.getSection().getTerm().getYear(),
+                    e.getSection().getTerm().getSemester()
             );
+            gradebookServiceProxy.addCourse(enrollmentDTO);
+            return enrollmentDTO;
         }
 
     }
@@ -208,6 +214,24 @@ public class StudentController {
            throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "Too late to drop. Sorry, the money is ours");
        } else {
            enrollmentRepository.delete(e);
+           EnrollmentDTO enrollmentDTO = new EnrollmentDTO(
+                   e.getEnrollmentId(),
+                   e.getGrade(),
+                   e.getStudent().getId(),
+                   e.getStudent().getName(),
+                   e.getStudent().getEmail(),
+                   e.getSection().getCourse().getCourseId(),
+                   e.getSection().getSecId(),
+                   e.getSection().getSectionNo(),
+                   e.getSection().getBuilding(),
+                   e.getSection().getRoom(),
+                   e.getSection().getTimes(),
+                   e.getSection().getCourse().getCredits(),
+                   e.getSection().getTerm().getYear(),
+                   e.getSection().getTerm().getSemester()
+
+           );
+           gradebookServiceProxy.dropCourse(enrollmentDTO);
        }
 
    }
