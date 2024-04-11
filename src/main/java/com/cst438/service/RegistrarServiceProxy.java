@@ -252,7 +252,6 @@ public class RegistrarServiceProxy {
     }
 
     public void dropCourse(EnrollmentDTO enrollmentDTO){
-        System.out.println("entered dropCourse");
         Enrollment e = enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentDTO.enrollmentId());
         try{
             enrollmentRepository.delete(e);
