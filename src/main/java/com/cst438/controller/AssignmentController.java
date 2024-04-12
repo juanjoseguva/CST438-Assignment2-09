@@ -5,6 +5,7 @@ import com.cst438.dto.AssignmentDTO;
 import com.cst438.dto.AssignmentStudentDTO;
 import com.cst438.dto.GradeDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
@@ -36,12 +38,20 @@ public class AssignmentController {
     // instructor lists assignments for a section.  Assignments ordered by due date.
     // logged in user must be the instructor for the section
     @GetMapping("/sections/{secNo}/assignments")
+    @PreAuthorize("hasAuthority(‘SCOPE_ROLE_ADMIN’)")
     public List<AssignmentDTO> getAssignments(
-            @PathVariable("secNo") int secNo) {
-
+            @PathVariable("secNo") int secNo,
+            Principal principal) {
+        Section section = sectionRepository.findSectionBySectionNo(secNo);
+        if(section == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Section number does not exist.");
+        }
+        if(principal.getName() != section.getInstructorEmail()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the listed instructor for this section.");
+        }
         List<Assignment> assignments = assignmentRepository.findBySectionNoOrderByDueDate(secNo);
         if (assignments.isEmpty()) {
-            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found " + secNo);
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "No assignments found for " + secNo);
         }
         List<AssignmentDTO> dto_list = new ArrayList<>();
         for(Assignment a:assignments){
@@ -54,11 +64,6 @@ public class AssignmentController {
                     a.getSection().getSectionNo()
             ));
         }
-
-        // hint: use the assignment repository method
-        //  findBySectionNoOrderByDueDate to return
-        //  a list of assignments
-
         return dto_list;
     }
 

@@ -7,10 +7,10 @@ insert into term (term_id, tyear, semester, add_date, add_deadline, drop_deadlin
 (10, 2024, 'Fall',  '2024-05-01', '2024-08-30', '2024-08-30', '2024-08-15', '2024-12-17');
 
 insert into user_table (id, name, email, password, type) values
-(1, 'david wisneski', 'dwisneski@csumb.edu', '', 'INSTRUCTOR'),
-(2, 'joshua gross', 'jgross@csumb.edu', '', 'INSTRUCTOR'),
-(3, 'thomas edison', 'tedison@csumb.edu', '', 'STUDENT'),
-(4, 'fred brooks', 'fbrooks@csumb.edu', '', 'ADMIN'),
+(1, 'david wisneski', 'dwisneski@csumb.edu', '$2a$10$fRWtuq3dw6g3bhPWeHnsNOZ5slcDc38Xj.urfYIY2XVwFaFu/hVBK', 'INSTRUCTOR'),
+(2, 'joshua gross', 'jgross@csumb.edu', '$2a$10$FGBUIeKmoveSkWLl4v5jAeY9M/ezAZfuiZaDoUq8.XbswczA3qaky', 'INSTRUCTOR'),
+(3, 'thomas edison', 'tedison@csumb.edu', '$2a$10$MaiI0zjd5Mj5EeERhJRna.ZXR.zctCI1ID//.o0PqHbSiDNdTy3Vm', 'STUDENT'),
+(4, 'fred brooks', 'fbrooks@csumb.edu', '$2a$10$EKXkBYkLo7FHsdvuJ2rogOn9q.KTD6KdSFSuHea9bt1g1O5127k9i', 'ADMIN'),
 (5, 'user', 'user@csumb.edu', '$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue','STUDENT'),
 (6, 'admin', 'admin@csumb.edu', '$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW' , 'ADMIN');
 
