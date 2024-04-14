@@ -32,14 +32,19 @@ public class EnrollmentController {
             @PathVariable("sectionNo") int sectionNo,
             Principal principal) {
         Section section = sectionRepository.findSectionBySectionNo(sectionNo);
-        if(section != null){
-            if(!(section.getInstructorEmail().equals(principal.getName()))){
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the listed instructor of this course");
-            }
+        //Check that the section exists
+        if(section == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Section number is invalid" );
         }
+        //Check that the logged in professor is the professor of the requested section
+        if(!(section.getInstructorEmail().equals(principal.getName()))){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the listed instructor of this course");
+        }
+        //Get the list of enrollments based on sectionNo
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(sectionNo);
-        if(enrollments == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Section number is invalid");
+        //Check that enrollments !=0
+        if(enrollments.size() == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no current enrollments for that section");
         }
 
         return enrollments.stream()
