@@ -84,6 +84,12 @@ public class RegistrarServiceProxy {
                 case "deleteUser":
                     deleteUser(fromJsonString(dtoString, UserDTO.class));
                     break;
+                case "addCourseStudent":
+                    addCourseStudent(fromJsonString(dtoString, EnrollmentDTO.class));
+                    break;
+                case "dropCourse":
+                    dropCourse(fromJsonString(dtoString, EnrollmentDTO.class));
+                    break;
             }
 
         } catch (Exception e){
