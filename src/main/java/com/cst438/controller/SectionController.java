@@ -190,10 +190,14 @@ public class SectionController {
         return dto_list;
     }
 
+     //get open sections for a student
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     @GetMapping("/sections/open")
     public List<SectionDTO> getOpenSectionsForEnrollment() {
-
         List<Section> sections = sectionRepository.findByOpenOrderByCourseIdSectionId();
+        if (sections.isEmpty()) {
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "No open sections at the moment");
+        }
 
         List<SectionDTO> dlist = new ArrayList<>();
         for (Section s : sections) {
