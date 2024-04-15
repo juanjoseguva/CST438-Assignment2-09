@@ -167,6 +167,10 @@ public class SectionController {
 
         List<Section> sections = sectionRepository.findByInstructorEmailAndYearAndSemester(instructorEmail, year, semester);
 
+        if (sections.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No sections found with supplied fields");
+        }
+
         List<SectionDTO> dto_list = new ArrayList<>();
         for (Section s : sections) {
             User instructor = null;
