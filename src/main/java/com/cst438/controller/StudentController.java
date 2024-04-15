@@ -47,45 +47,39 @@ public class StudentController {
 
        // list course_id, sec_id, title, credit, grade in chronological order
        // user must be a student
-	   // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
+       // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
+       //Get user by email
        User student = userRepository.findByEmail(principal.getName());
+       //Make sure user is not null
        if(student == null){
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student record not found for " + principal.getName());
+       }
+       //Check that user type is student
+       if(student.getType() != "STUDENT"){
+           throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You must be a student to get a transcript");
        }
        int studentId = student.getId();
        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByStudentIdOrderByTermId(studentId);
        List<EnrollmentDTO> dto_list = new ArrayList<>();
-       boolean studentFound = false;
+
        for (Enrollment e : enrollments) {
-          if (e.getStudent().getId() == studentId) {
-              studentFound = true;
-              break;
-          }
-      }
-      if (!studentFound) {
-          throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Student not found "+ studentId);
-      } else {
-          for (Enrollment e : enrollments) {
-              dto_list.add(new EnrollmentDTO(
-                      e.getEnrollmentId(),
-                      e.getGrade(),
-                      studentId,
-                      e.getStudent().getName(),
-                      e.getStudent().getEmail(),
-                      e.getSection().getCourse().getCourseId(),
-                      e.getSection().getSecId(),
-                      e.getSection().getSectionNo(),
-                      e.getSection().getBuilding(),
-                      e.getSection().getRoom(),
-                      e.getSection().getTimes(),
-                      e.getSection().getCourse().getCredits(),
-                      e.getSection().getTerm().getYear(),
-                      e.getSection().getTerm().getSemester()));
-          }
-
-          return dto_list;
-
-      }
+           dto_list.add(new EnrollmentDTO(
+                   e.getEnrollmentId(),
+                   e.getGrade(),
+                   studentId,
+                   e.getStudent().getName(),
+                   e.getStudent().getEmail(),
+                   e.getSection().getCourse().getCourseId(),
+                   e.getSection().getSecId(),
+                   e.getSection().getSectionNo(),
+                   e.getSection().getBuilding(),
+                   e.getSection().getRoom(),
+                   e.getSection().getTimes(),
+                   e.getSection().getCourse().getCredits(),
+                   e.getSection().getTerm().getYear(),
+                   e.getSection().getTerm().getSemester()));
+       }
+       return dto_list;
    }
 
     // student gets a list of their enrollments for the given year, semester
@@ -139,56 +133,46 @@ public class StudentController {
     @PostMapping("/enrollments/sections/{sectionNo}")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public EnrollmentDTO addCourse(
-		    @PathVariable int sectionNo,
+            @PathVariable int sectionNo,
             Principal principal) {
 
         // TODO
         // check that the Section entity with primary key sectionNo exists
-        Section s = sectionRepository.findById(sectionNo).orElse(null);
-        if (s==null){
+        Section section = sectionRepository.findSectionBySectionNo(sectionNo);
+        if (section==null){
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found " + sectionNo);
         }
         //These variable names are to not conflict with the later variables already written
-        User loggedInStudent = userRepository.findByEmail(principal.getName());
-        if (loggedInStudent == null){
+        User student = userRepository.findByEmail(principal.getName());
+        if (student == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student record not found for " + principal.getName());
         }
-        int studentId = loggedInStudent.getId();
+        int studentId = student.getId();
+        //Check that student is not already enrolled
+        Enrollment enrollment = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(sectionNo, studentId);
+        if(enrollment != null){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are already enrolled in section " + sectionNo);
+        }
 
         // check that today is between addDate and addDeadline for the section
         long millis = System.currentTimeMillis();
         java.sql.Date today = new java.sql.Date(millis);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        Date addDate = s.getTerm().getAddDate();
-        Date addDeadline = s.getTerm().getAddDeadline();
+        Date addDate = section.getTerm().getAddDate();
+        Date addDeadline = section.getTerm().getAddDeadline();
         if (today.before(addDate) || today.after(addDeadline)) {
             throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "Invalid date");
         }
 
-        // check that student is not already enrolled into this section
-        Enrollment e = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(sectionNo, studentId);
-        Section section = sectionRepository.findSectionBySectionNo(sectionNo);
-        List<User> users = userRepository.findAllByOrderByIdAsc();
-        User student = new User();
-        for (User u : users) {
-            if (u.getId() == studentId) {
-                student = u;
-                break;
-            }
-        }
-
         // create a new enrollment entity and save.  The enrollment grade will
         // be NULL until instructor enters final grades for the course.
-        if (e != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "already enrolled in this section");
-        } else {
-            e = new Enrollment();
-            e.setSection(section);
-            e.setUser(student);
-            enrollmentRepository.save(e);
-            return new EnrollmentDTO(
-              e.getEnrollmentId(),
-              "",
+        Enrollment e = new Enrollment();
+        e.setSection(section);
+        e.setUser(student);
+        enrollmentRepository.save(e);
+        return new EnrollmentDTO(
+                e.getEnrollmentId(),
+                "",
                 studentId,
                 e.getStudent().getName(),
                 e.getStudent().getEmail(),
@@ -201,9 +185,7 @@ public class StudentController {
                 e.getSection().getCourse().getCredits(),
                 e.getSection().getTerm().getYear(),
                 e.getSection().getTerm().getSemester()
-            );
-        }
-
+        );
     }
 
     // student drops a course
