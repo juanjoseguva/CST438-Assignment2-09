@@ -9,6 +9,7 @@ public record EnrollmentDTO(
         String name,
         String email,
         String courseId,
+        String courseTitle,
         int sectionId,
         int sectionNo,
         String building,

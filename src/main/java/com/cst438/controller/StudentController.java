@@ -55,7 +55,7 @@ public class StudentController {
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student record not found for " + principal.getName());
        }
        //Check that user type is student
-       if(student.getType() != "STUDENT"){
+       if(!(student.getType().equals("STUDENT"))){
            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You must be a student to get a transcript");
        }
        int studentId = student.getId();
@@ -70,6 +70,7 @@ public class StudentController {
                    e.getStudent().getName(),
                    e.getStudent().getEmail(),
                    e.getSection().getCourse().getCourseId(),
+                   e.getSection().getCourse().getTitle(),
                    e.getSection().getSecId(),
                    e.getSection().getSectionNo(),
                    e.getSection().getBuilding(),
@@ -112,6 +113,7 @@ public class StudentController {
                    e.getStudent().getName(),
                    e.getStudent().getEmail(),
                    e.getSection().getCourse().getCourseId(),
+                   e.getSection().getCourse().getTitle(),
                    e.getSection().getSecId(),
                    e.getSection().getSectionNo(),
                    e.getSection().getBuilding(),
@@ -177,6 +179,7 @@ public class StudentController {
                 e.getStudent().getName(),
                 e.getStudent().getEmail(),
                 e.getSection().getCourse().getCourseId(),
+                e.getSection().getCourse().getTitle(),
                 e.getSection().getSecId(),
                 e.getSection().getSectionNo(),
                 e.getSection().getBuilding(),
