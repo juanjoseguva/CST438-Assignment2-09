@@ -54,6 +54,7 @@ public class EnrollmentControllerUnitTest {
                 "thomas edison",
                 "tedison@csumb.edu",
                 "cst363",
+                "Introduction to Database Systems",
                 9,
                 9,
                 "052",
