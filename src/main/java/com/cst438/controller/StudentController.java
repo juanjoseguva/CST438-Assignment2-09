@@ -62,6 +62,24 @@ public class StudentController {
        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByStudentIdOrderByTermId(studentId);
        List<EnrollmentDTO> dto_list = new ArrayList<>();
 
+       dto_list.add(new EnrollmentDTO(
+               0,
+               null,
+               studentId,
+               student.getName(),
+               null,
+               null,
+               null,
+               69,
+               69,
+               null,
+               null,
+               null,
+               10,
+               2099,
+               null
+       ));
+
        for (Enrollment e : enrollments) {
            dto_list.add(new EnrollmentDTO(
                    e.getEnrollmentId(),
