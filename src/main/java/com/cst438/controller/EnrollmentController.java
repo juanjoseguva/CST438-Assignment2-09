@@ -43,7 +43,7 @@ public class EnrollmentController {
         //Get the list of enrollments based on sectionNo
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(sectionNo);
         //Check that enrollments !=0
-        if(enrollments.size() == 0){
+        if(enrollments.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no current enrollments for that section");
         }
 
