@@ -32,7 +32,7 @@ public class SectionController {
 
     // ADMIN function to create a new section
     @PostMapping("/sections")
-    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN') OR hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
     public SectionDTO addSection(@RequestBody SectionDTO section) {
 
         Course course = courseRepository.findById(section.courseId()).orElse(null);
