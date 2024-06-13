@@ -185,7 +185,7 @@ public class SectionController {
         }
         return dto_list;
     }
-	
+
     @GetMapping("/sections/open")
     public List<SectionDTO> getOpenSectionsForEnrollment() {
 
